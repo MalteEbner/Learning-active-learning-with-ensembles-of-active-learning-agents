@@ -28,7 +28,7 @@ class Task_randomForest(Task_supervised):
 
     def get_y_train(self, sampleIDs: List[int]="all") -> list:
         if hasattr(self,"y_train"):
-            if sampleIDs=="all":
+            if isinstance(sampleIDs,str) and sampleIDs=="all":
                 return self.y_train
             else:
                 return np.concatenate([self.y_train[i,None] for i in sampleIDs])
@@ -94,7 +94,6 @@ class Task_randomForest(Task_supervised):
             sampleIDs = np.random.choice(range(noTrainingSamples),size=noRandomSamples,replace=False)
             x_train = self.get_x_train(sampleIDs)
             y_train = self.get_y_train(sampleIDs)
-            noEpochs = int(hyperparamDict.get('noEpochs',100))
             self.classifier.fit(x_train, y_train)
             acc = self.classifier.score(x_test, y_test)
             print("acc: " + str(acc) + " hyperparams: "+ str(hyperparamDict))
