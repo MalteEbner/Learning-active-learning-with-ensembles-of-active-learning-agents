@@ -57,7 +57,7 @@ class AL_Env():
 
             reward = 0
             info = self.oldInfo
-            info["noLabelledSamples"] +=1
+            info["noLabelledSamples"] = len(self.labelledIDs)
 
         self.oldObservation = observation
         self.oldInfo = info

@@ -31,6 +31,12 @@ class Task_Parameters():
             raise ValueError
         return task
 
+    def getExperimentFilename(self):
+        filename = 'Experiments/results/'
+        filename += self.__repr__()
+        filename += '_experiments'
+        return filename
+
     def __repr__(self):
         selfDict = self.__dict__
         return str([selfDict[key] for key in sorted(selfDict.keys(), reverse=False)])
