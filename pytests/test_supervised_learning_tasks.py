@@ -6,7 +6,7 @@ def _test_task_params(task_params):
     task = task_params.createTask()
     task.resetModel()
     labelled_IDs = list(range(20))
-    loss, accuracy = task.trainOnBatch(labelled_IDs, epochs=1)
+    loss, accuracy = task.trainOnBatch(labelled_IDs)
 
 def test_task_checkerboard():
     task_params = Task_Parameters(taskName="model_checkerboard",variantParams="2x2_rotated")

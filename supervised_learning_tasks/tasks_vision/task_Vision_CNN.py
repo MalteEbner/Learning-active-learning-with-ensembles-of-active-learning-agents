@@ -52,7 +52,7 @@ class Task_Vision_CNN(Task_KERAS):
         self.initialLearningRate = variantParams.initLR
         self.validationPatience = variantParams.valPat
 
-        Task_KERAS.__init__(self,verboseInit=verboseInit)
+        Task_KERAS.__init__(self,no_epochs=variantParams.no_epochs,verboseInit=verboseInit)
 
 
     def getModelIndependentInfo(self,sampleIDs: List[int]) -> dict:

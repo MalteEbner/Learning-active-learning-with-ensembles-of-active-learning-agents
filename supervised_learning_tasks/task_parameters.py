@@ -10,34 +10,21 @@ class Task_Parameters():
     def __init__(self,taskName: str, variantParams: dict=None):
         self.taskName = taskName
         self.variantParams = variantParams
-        #self.createTask() #to cause ValueError if taskName is false
 
     def createTask(self,verboseInit=False) -> Task_supervised:
         variantParams = self.variantParams
+
         if self.taskName == "model_bAbI_memoryNetwork":
-            if variantParams == None:
-                task = Task_bAbI_memoryNetwork(verboseInit=verboseInit)
-            else:
-                task = Task_bAbI_memoryNetwork(variantParams, verboseInit=verboseInit)
+            task = Task_bAbI_memoryNetwork(variantParams=variantParams,verboseInit=verboseInit)
 
         elif self.taskName == "model_Vision":
-            if variantParams == None:
-                task = Task_Vision_CNN(verboseInit=verboseInit)
-            else:
-                task = Task_Vision_CNN(verboseInit=verboseInit, variantParams=variantParams)
-
+            task = Task_Vision_CNN(variantParams=variantParams,verboseInit=verboseInit)
 
         elif self.taskName == "model_checkerboard":
-            if variantParams == None:
-                task = Task_Checkerboard_randomForest(verboseInit=verboseInit)
-            else:
-                task = Task_Checkerboard_randomForest(variantParams=variantParams,verboseInit=verboseInit)
-
-
+            task = Task_Checkerboard_randomForest(variantParams=variantParams,verboseInit=verboseInit)
 
         elif self.taskName == "model_UCI":
             task = Task_UCI_randomForest(variantParams=variantParams,verboseInit=verboseInit)
-
 
         else:
             print("ERROR: taskName unknown")
@@ -59,23 +46,6 @@ class Task_Parameters():
         repr = repr.replace('model_','')
         repr = repr.replace('_randomForest','')
         return repr
-
-    def getTrainingDataFilename(self,batchSize_annotation=1):
-        filename = '../AL_apply_trainLearningAgents/trainingData/'
-        filename += self.__repr__()
-        filename += '_trainingData'
-        if batchSize_annotation > 1:
-            filename += '_' + str(batchSize_annotation)
-        else:
-            filename += '_sequential'
-        return filename
-
-
-    def getExperimentFilename(self):
-        filename = '../AL_apply/experiments/'
-        filename += self.__repr__()
-        filename += '_experiments'
-        return filename
 
     def __eq__(self, other):
         equal = True

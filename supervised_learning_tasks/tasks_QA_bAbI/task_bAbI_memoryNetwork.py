@@ -27,7 +27,7 @@ class Task_bAbI_memoryNetwork(Task_KERAS):
 
     def __init__(self,variantParams: Task_bAbI_variantParams, verboseInit: bool=False):
         self.challenge_type = variantParams.type
-        Task_KERAS.__init__(self,verboseInit=verboseInit)
+        Task_KERAS.__init__(self,no_epochs=variantParams.no_epochs,verboseInit=verboseInit)
 
     def resetModel(self):
         self.model.set_weights(self.initialWeights)
@@ -55,22 +55,7 @@ class Task_bAbI_memoryNetwork(Task_KERAS):
     def getLossFunction(self):
         return losses.SparseCategoricalCrossentropy
 
-    def getSamplesSpace(self):
-        vocabSize = self.dataParams.vocab_size
-        sampleSpace = {}
-
-        input_shape = self.inputs_train.shape
-        input_nvec = np.ones(input_shape,np.int)*vocabSize
-        sampleSpace["input"]=spaces.MultiDiscrete(input_nvec)
-
-        query_shape = self.queries_train.shape
-        query_nvec = np.ones(query_shape,np.int)*vocabSize
-        sampleSpace["query"]=spaces.MultiDiscrete(query_nvec)
-
-        sampleSpace = spaces.Dict(sampleSpace)
-        return sampleSpace
-
-    def getModelIndependentInfo(self,sampleIDs: List[int] = 'all') -> dict:
+    def get_samples_repr_1d(self,sampleIDs: List[int] = 'all') -> dict:
         sampleInfo = dict()
         if not hasattr(self,"samples_repr_1d"):
             inputs_train, queries_train = self.get_x_train()

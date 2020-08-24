@@ -52,10 +52,8 @@ class Task_randomForest(Task_supervised):
             raise NotImplementedError
 
     def getNoTrainingSamples(self) -> int:
-        return self.getPredictionShape()[0]
+        return self.get_y_train().shape[0]
 
-    def getPredictionShape(self):
-        return self.get_y_train().shape
 
     def define_classifier(self, hyperparamDict: dict={}):
         '''
@@ -121,10 +119,9 @@ class Task_randomForest(Task_supervised):
             debugPoint = 0
         return predictions
 
-    def getModelIndependentInfo(self,sampleIDs: List[int]) -> dict:
-        sampleInfo = dict()
-        sampleInfo["samples_repr_1d"] = self.get_x_train(sampleIDs)
-        return sampleInfo
+    def get_samples_repr_1d(self, sampleIDs: List[int] = 'all') -> dict:
+        samples_repr_1d = self.get_x_train(sampleIDs)
+        return samples_repr_1d
 
     def getModelDependentInfo(self,sampleIDs: List[int]) -> dict:
         sampleInfo = dict()
@@ -149,12 +146,6 @@ class Task_randomForest(Task_supervised):
         acc = self.model.score(x_test, y_test)
         print('Test accuracy:', acc)
         return -1*acc, acc
-
-    def getCurrentModelRepr(self):
-        return copy.copy(self.classifier)
-
-    def setCurrentModel(self, model_representation):
-        self.classifier = model_representation
         
     def getTrueOneStepImprovementLosses(self, currentLabelledSet: List[int], sampleIDs: List[int]) -> List[float]:
         model_representation = self.getCurrentModelRepr()
@@ -162,20 +153,12 @@ class Task_randomForest(Task_supervised):
         self.setCurrentModel(model_representation=model_representation)
         return newLosses
 
-
-    def trainOnBatch(self, sampleIDs: list, epochs: int, resetWeights: bool=True, freezeWeights: bool=False) -> Tuple[float,float]:
-
-        resetWeights=True #cannot continue training like for NNs
-
+    def trainOnBatch(self, sampleIDs: List[int]) -> Tuple[float, float]:
         #get subset to train on
         x_train = self.get_x_train(sampleIDs)
         y_train = self.get_y_train(sampleIDs)
         x_test = self.get_x_test()
         y_test = self.get_y_test()
-
-
-        if freezeWeights:
-            model_repr = self.getCurrentModelRepr()
 
         if len(y_train.shape) == 2:
             y_train = y_train[:,0]
@@ -185,14 +168,7 @@ class Task_randomForest(Task_supervised):
         acc = self.classifier.score(x_test,y_test)
         loss = -1*acc
 
-
-        if freezeWeights:
-            self.setCurrentModel(model_repr)
-
         return loss, acc
-
-    def getEstimatedLossImprovements(self, sampleIDs: List[int], samplePredictons: object) -> List[float]:
-        raise NotImplementedError
 
 
     def get_dataset(self,verboseInit=False):
@@ -238,37 +214,5 @@ class Task_randomForest(Task_supervised):
         plt.scatter(x_train[:, 0], x_train[:, 1],c=colors)
         plt.gray()
         plt.show()
-
-
-
-
-    def getPredictionUncertainty(self, x):
-        # see LAL paper
-        if True:
-            predictionVars = np.std(np.array([tree.predict_proba(x)[:,0] for tree in self.classifier.estimators_]), axis=0)
-            return predictionVars
-        else:
-            # predictions of the trees
-            temp = np.array([tree.predict_proba(x)[:, 0] for tree in self.classifier.estimators_])
-            # - average and standard deviation of the predicted scores
-            f_1 = np.mean(temp, axis=0)
-            f_2 = np.std(temp, axis=0)
-            # - proportion of positive points
-            #f_3 = (sum(known_labels > 0) / n_lablled) * np.ones_like(f_1)
-            # the score estimated on out of bag estimate
-            f_4 = self.classifier.oob_score * np.ones_like(f_1)
-            # - coeficient of variance of feature importance
-            f_5 = np.std(self.classifier.feature_importances_ / len(self.classifier.feature_importances_)) * np.ones_like(f_1)
-            # - estimate variance of forest by looking at avergae of variance of some predictions
-            f_6 = np.mean(f_2, axis=0) * np.ones_like(f_1)
-            # - compute the average depth of the trees in the forest
-            f_7 = np.mean(np.array([tree.tree_.max_depth for tree in self.classifier.estimators_])) * np.ones_like(f_1)
-            # - number of already labelled datapoints
-            #f_8 = np.size(self.indicesKnown) * np.ones_like(f_1)
-
-            # all the features put together for regressor
-            featuresToStack = [f_1, f_2,  f_4, f_5, f_6, f_7]
-            features = np.stack(featuresToStack,axis=1)
-            return features
 
 

@@ -1,9 +1,10 @@
 
 class Task_bAbI_variantParams:
-    def __init__(self, challenge_type: str = 'single_supporting_fact_10k'):
+    def __init__(self, challenge_type: str = 'single_supporting_fact_10k', no_epochs=30):
         if challenge_type not in ['single_supporting_fact_10k','two_supporting_facts_10k']:
             raise ValueError
         self.type = challenge_type
+        self.no_epochs = no_epochs
 
 
     def __shortRepr__(self):

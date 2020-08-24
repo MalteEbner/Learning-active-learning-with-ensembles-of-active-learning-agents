@@ -4,14 +4,13 @@ from supervised_learning_tasks.tasks_vision.task_Vision_1drepr_getter import Vis
 
 class Task_Vision_variantParams:
     def __init__(self, dataset: str = "MNIST", regularizationFactor: float = 1e-4, initialLearningRate=3e-2, validationPatience = 3,
-                 repr_1d_type: str='PCA', repr_1d_n_components=200):
+                 repr_1d_type: str='tSNE', repr_1d_n_components=200, no_epochs: int=-1):
         '''
-            @param dataset: from { "MNIST" , "fashion", "CIFAR10"}
+            @param dataset: from { "MNIST" , "fashion"}
             @param architecture: from { "simpleCNN" , "resnet" }
             @param regularizationFactor: for l2-regularization of kernels
-            @param version: for resnet from { 1 , 2}
-            @param depthParameter: for resnet
         '''
+        self.no_epochs = no_epochs
         self.dataset = dataset
         self.regularizationFactor = regularizationFactor
         self.initLR = initialLearningRate

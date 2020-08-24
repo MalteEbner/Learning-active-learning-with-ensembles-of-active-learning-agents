@@ -15,28 +15,13 @@ class Task_supervised():
     # get Information needed during initialization
 
     def getNoTrainingSamples(self) -> int:
-        return self.getPredictionShape()[0]
-
-    def getPredictionShape(self) -> List[int]:
         raise NotImplementedError
 
-    def getSampleSpace(self):
-        raise NotImplementedError
-
-    def getLabels(self,sampleIDs: List[int]):
-        '''
-        @param sampleIDs: shape: (m)
-        @return: shape: (m, noClasses)
-        '''
-        raise NotImplementedError
 
     def getPredictions(self,sampleIDs: List[int]):
         raise NotImplementedError
 
-    def getCurrentModelRepr(self):
-        raise NotImplementedError
-
-    def setCurrentModel(self, model_representation):
+    def get_samples_repr_1d(self, sampleIDs: List[int] = 'all') -> dict:
         raise NotImplementedError
 
     # get distances to batch
@@ -83,18 +68,7 @@ class Task_supervised():
 
         return samplesInfo
 
-    def getSimilarityPercentiles(self, vectorA: np.ndarray, vectorB: np.ndarray, percentileBorders: List[int]) -> np.ndarray:
-        '''
-        @param vectorA: shape: (n , d)
-        @param vectorB: shape: (m , d)
-        @return: shape: (n,noPercentiles)
-        '''
-        if vectorA.shape[1] != vectorB.shape[1]:
-            raise ValueError
 
-        distances = pairwise_distances(vectorA,vectorB) # shape (n, m)
-        percentiles = np.percentile(distances, percentileBorders, axis=1).T # shape (n, 6)
-        return percentiles
 
 
     # train model
@@ -102,12 +76,8 @@ class Task_supervised():
     def trainFully(self) -> float:
         raise NotImplementedError
 
-    def trainOnBatch(self, sampleIDs: List[int], epochs: int, resetWeights: bool=True, freezeWeights: bool=False)  -> Tuple[float,float]:
+    def trainOnBatch(self, sampleIDs: List[int]) -> Tuple[float,float]:
         raise NotImplementedError
 
-def entropy(probabilityDistribution: List[float]) -> float:
-    pD = probabilityDistribution
-    zeros = np.zeros(pD.shape)
-    entropy = -1* np.sum(pD * np.log2(pD,out=zeros, where=pD>0),axis=1)
-    return entropy
+
 
