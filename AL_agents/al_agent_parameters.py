@@ -19,10 +19,12 @@ class AL_Agent_Parameters():
         elif self.agentName == "Uncertainty":
             agent = AL_agent_uncertainty_sampling(self)
         elif self.agentName == "Diversity":
+            self.batchSize_agent = 1
             agent = AL_agent_diversity_sampling(self)
         elif self.agentName == "Representative":
             agent = AL_agent_representative_sampling(self)
         elif self.agentName == "Ensemble":
+            self.batchSize_agent = 1
             agent = AL_agent_Ensemble(self)
         else:
             print(f"ERROR: agentName unknown: {self.agentName}")

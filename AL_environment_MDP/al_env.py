@@ -53,7 +53,7 @@ class AL_Env():
             observation = self.define_observation()
         else:
             observation = self.oldObservation
-            observation.delete_features_of_chosen_samples(action)
+            observation.update_features_based_on_action(action)
 
             reward = 0
             info = self.oldInfo
