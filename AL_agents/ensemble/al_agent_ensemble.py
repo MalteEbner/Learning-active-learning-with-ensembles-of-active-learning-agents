@@ -11,7 +11,11 @@ class AL_agent_Ensemble(AL_Agent):
     def __init__(self, al_agent_parameters):
         self.al_agent_parameters = al_agent_parameters
 
-        self.define_beta_dict()
+        if hasattr(al_agent_parameters,"beta_dict"):
+            self.beta_dict = self.al_agent_parameters.beta_dict
+        else:
+            self.define_beta_dict()
+
         self.define_agents_dict()
 
     def get_utilities(self, observation: Observation) -> List[float]:
@@ -21,18 +25,22 @@ class AL_agent_Ensemble(AL_Agent):
             utilities = self.agents_dict[agentName].get_utilities(observation)
             utilities = np.array(utilities)
             # normalize them
-            utilities = (utilities-np.mean(utilities))/np.std(utilities)
+            utilities = (utilities - np.mean(utilities))
+            std_ = np.std(utilities)
+            if std_ > 0:
+                utilities /= std_
             # perform the linearcombination
             utilities *= self.beta_dict[agentName]
             utilities_total += utilities
-        return list(utilities)
+        # add random agent
+        utilities_total += self.agent_random.get_utilities(observation)
+        return list(utilities_total)
 
     def define_beta_dict(self):
         self.beta_dict = dict()
-        self.beta_dict["Random"] = 1
-        self.beta_dict["Uncertainty"] = 20
-        self.beta_dict["Diversity"] = 20
-        self.beta_dict["Representative"] = 0
+        self.beta_dict["Uncertainty"] = 1
+        self.beta_dict["Diversity"] = 1
+        self.beta_dict["Representative"] = 1
 
     def define_agents_dict(self):
         # must import here to prevent cyclic imports
@@ -47,6 +55,11 @@ class AL_agent_Ensemble(AL_Agent):
             )
             agent = agent_params.createAgent()
             self.agents_dict[agentName] = agent
+
+        agent_random_params = AL_Agent_Parameters("Random",
+                                                  self.al_agent_parameters.batchSize_annotation,
+                                                  self.al_agent_parameters.batchSize_agent)
+        self.agent_random = agent_random_params.createAgent()
 
 
 

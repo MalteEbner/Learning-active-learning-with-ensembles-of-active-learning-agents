@@ -6,12 +6,14 @@ from AL_agents.ensemble.al_agent_ensemble import AL_agent_Ensemble
 
 class AL_Agent_Parameters():
     def __init__(self, agentName: str = "Random",batchSize_annotation=1,
-                 batchSize_agent=1):
+                 batchSize_agent=1, beta_dict=None):
         self.agentName = agentName
         self.batchSize_annotation = batchSize_annotation
         if batchSize_agent <= 0:
             batchSize_agent = batchSize_annotation
         self.batchSize_agent = batchSize_agent
+        if beta_dict:
+            self.beta_dict = beta_dict
 
     def createAgent(self):
         if self.agentName == "Random":
