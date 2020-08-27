@@ -18,13 +18,13 @@ def _apply_single_heuristic(agent_parameters: AL_Agent_Parameters):
     # run AL with random sampling
     iteration = al_parameters.startingSize
     expectedNoIterations = al_env.expectedNoIterations()
-    print("Starting random AL with %d iterations" % expectedNoIterations)
+    #print("Starting random AL with %d iterations" % expectedNoIterations)
 
     observation = al_env.reset()
     for i in range(expectedNoIterations):
         action = agent.policy(observation)
         observation, reward, done, info = al_env.step(action)
-        print('iteration %d: accuracy %.4f' % (iteration, info['accuracy']))
+        #print('iteration %d: accuracy %.4f' % (iteration, info['accuracy']))
         iteration += 1
         if done:
             break
@@ -32,7 +32,7 @@ def _apply_single_heuristic(agent_parameters: AL_Agent_Parameters):
 
 def _get_test_parameters():
     test_cases = []
-    for agentName in ["Random", "Uncertainty", "Diversity", "Representative"]:
+    for agentName in ["Random", "Uncertainty", "Diversity", "Representative", "Ensemble"]:
         for batchSize_annotation in [1, 8]:
             for batchSize_agent in [1, 3, -1]:
                 name = f'{agentName}_{batchSize_annotation}_{batchSize_agent}'
