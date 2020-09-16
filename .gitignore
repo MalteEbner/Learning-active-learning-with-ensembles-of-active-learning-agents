@@ -126,3 +126,4 @@ dmypy.json
 
 # Pycharm environment
 .idea
+venv_windows
