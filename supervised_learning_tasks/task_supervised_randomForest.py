@@ -65,7 +65,7 @@ class Task_randomForest(Task_supervised):
 
         n_estimators = int(hyperparamDict.get("n_estimators", 50))
 
-        n_jobs = 2 # prevent running out of threads
+        n_jobs = 1 # prevent running out of threads
         classifier = RandomForestClassifier(n_estimators=n_estimators, n_jobs=n_jobs)
         return classifier
 
