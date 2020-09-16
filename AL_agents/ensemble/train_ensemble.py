@@ -1,3 +1,5 @@
+from typing import Dict
+
 import hyperopt as hp
 import lightgbm  # needed by hyperopt
 import sklearn  # needed by hyperopt
@@ -7,12 +9,16 @@ from AL_environment_MDP.al_parameters import AL_Parameters
 from AL_agents.al_agent_parameters import AL_Agent_Parameters
 from AL_agents.ensemble.train_ensemble_objective_function import train_ensemble_objective_function
 from AL_agents.ensemble.train_ensemble_beta_dict_handler import BetaDictHandler
+from AL_apply_agent_on_task.parallel_run_handler import ParallelRunHandler
 
 startingSize = 8
 annotationBudget = 72
 batchSize_annotation = 32
-maxNoRunsInParallel = 12
-max_evals = 4
+
+maxNoRunsInParallel = 16
+runs_per_objective_function = maxNoRunsInParallel*2
+
+max_evals = 100
 
 algo = [hp.atpe.suggest, hp.tpe.suggest, hp.rand.suggest][0]
 
@@ -45,20 +51,24 @@ mean_type = "arithmetic"
 if len(task_names) > 1:
     mean_type = "geometric"
 
+with ParallelRunHandler(task_param_list[0].getExperimentFilename(), n_jobs=runs_per_objective_function, test=False,
+                        save_results=False,
+                        parallelization=True,
+                        verbose=False) as parallel_run_handler:
 
-def objective_function(beta_dict):
-    objective_to_maximize = train_ensemble_objective_function(
-        beta_dict, task_param_list, al_params, agent_param,
-        mean_type=mean_type, n_jobs=maxNoRunsInParallel)
-    print(f"{objective_to_maximize}  {beta_dict}")
-    return -1 * objective_to_maximize
+    def objective_function(beta_dict: Dict):
+        objective_to_maximize = train_ensemble_objective_function(
+            parallel_run_handler,
+            beta_dict,
+            task_param_list, al_params, agent_param,
+            mean_type=mean_type)
+        print(f"{objective_to_maximize}  {beta_dict}")
+        return -1 * objective_to_maximize
 
+    relevant_task_name = task_param_list[0].taskName
+    search_space = BetaDictHandler(relevant_task_name).get_hyperopt_space()
 
+    example_beta = hp.pyll.stochastic.sample(search_space)
 
-relevant_task_name = task_param_list[0].taskName
-search_space = BetaDictHandler(relevant_task_name).get_hyperopt_space()
-
-example_beta = hp.pyll.stochastic.sample(search_space)
-
-best_beta = hp.fmin(objective_function, search_space, algo=algo, max_evals=max_evals, verbose=False)
-print(f"best beta: {best_beta}")
+    best_beta = hp.fmin(objective_function, search_space, algo=algo, max_evals=max_evals, verbose=True)
+    print(f"best beta: {best_beta}")
