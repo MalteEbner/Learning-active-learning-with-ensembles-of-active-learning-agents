@@ -26,7 +26,7 @@ def get_application_config(taskName):
         startingSize = 8
         annotation_budget = 200
         n_jobs = 12  # number of cores to use in parallel
-        noRepetitions = 24  # number of runs per agent (for confidence intervals)
+        noRepetitions = 12  # number of runs per agent (for confidence intervals)
 
     elif taskName == "model_Vision":
         variantParams = Task_Vision_variantParams(dataset='MNIST', repr_1d_type='tSNE')
