@@ -9,8 +9,6 @@ from tensorflow.keras.layers import Dense, Dropout, Flatten, Input, Flatten, Bat
 from tensorflow.keras.layers import Conv2D, MaxPooling2D, AveragePooling2D
 from tensorflow.keras import backend as K
 from tensorflow.keras import losses
-from tensorflow.keras.callbacks import ModelCheckpoint, LearningRateScheduler
-from tensorflow.keras.callbacks import ReduceLROnPlateau
 from tensorflow.keras.callbacks import EarlyStopping
 from tensorflow.keras import metrics
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
@@ -18,9 +16,6 @@ from tensorflow.keras.regularizers import l2, l1_l2
 from tensorflow.keras.models import Model, Sequential
 from tensorflow.keras.datasets import cifar10, mnist, fashion_mnist
 from tensorflow.keras.optimizers import Adam, Adadelta
-from tensorflow.keras.applications import resnet50
-from tensorflow.compat.v1.image import resize_images
-from tensorflow import stack, concat, squeeze
 
 import jsonpickle
 
