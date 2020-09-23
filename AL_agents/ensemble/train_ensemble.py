@@ -12,13 +12,13 @@ from AL_agents.ensemble.train_ensemble_beta_dict_handler import BetaDictHandler
 from AL_apply_agent_on_task.parallel_run_handler import ParallelRunHandler
 
 startingSize = 8
-annotationBudget = 72
-batchSize_annotation = 32
+annotationBudget = 40
+batchSize_annotation = 4
 
-maxNoRunsInParallel = 16
-runs_per_objective_function = maxNoRunsInParallel*2
+maxNoRunsInParallel = 8
+runs_per_objective_function = 32
 
-max_evals = 100
+max_evals = 60
 
 algo = [hp.atpe.suggest, hp.tpe.suggest, hp.rand.suggest][0]
 
@@ -29,10 +29,10 @@ task_param_list = []
 if False:
     variantParams = Task_Vision_variantParams(dataset='MNIST', repr_1d_type='tSNE')
     task_param_list += [Task_Parameters(taskName="model_Vision", variantParams=variantParams)]
-if True:
+if False:
     task_param_list += [Task_Parameters(taskName="model_checkerboard", variantParams="2x2")]
     task_param_list += [Task_Parameters(taskName="model_checkerboard", variantParams="2x2_rotated")]
-if False:
+if True:
     UCI_Datasets = ['2-breast_cancer', '3-diabetis', '4-flare_solar',
                     '5-german', '6-heart', '7-mushrooms', '8-waveform', '9-wdbc']
     for uciDataset in UCI_Datasets:
@@ -43,7 +43,7 @@ if False:
     task_param_list += [Task_Parameters(taskName="model_bAbI_memoryNetwork", variantParams=task_bAbI_variantParams)]
 
 task_names = list([task_param.__shortRepr__() for task_param in task_param_list])
-task_param_list *= int(maxNoRunsInParallel / len(task_param_list))
+task_param_list *= int(runs_per_objective_function / len(task_param_list))
 al_params = AL_Parameters(annotationBudget=annotationBudget, startingSize=startingSize)
 agent_param = AL_Agent_Parameters(agentName="Ensemble", batchSize_annotation=batchSize_annotation)
 
@@ -51,7 +51,7 @@ mean_type = "arithmetic"
 if len(task_names) > 1:
     mean_type = "geometric"
 
-with ParallelRunHandler(task_param_list[0].getExperimentFilename(), n_jobs=runs_per_objective_function, test=False,
+with ParallelRunHandler(task_param_list[0].getExperimentFilename(), n_jobs=maxNoRunsInParallel, test=False,
                         save_results=False,
                         parallelization=True,
                         verbose=False) as parallel_run_handler:
@@ -66,7 +66,7 @@ with ParallelRunHandler(task_param_list[0].getExperimentFilename(), n_jobs=runs_
         return -1 * objective_to_maximize
 
     relevant_task_name = task_param_list[0].taskName
-    search_space = BetaDictHandler(relevant_task_name).get_hyperopt_space()
+    search_space = BetaDictHandler().get_hyperopt_space()
 
     example_beta = hp.pyll.stochastic.sample(search_space)
 

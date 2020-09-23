@@ -25,6 +25,6 @@ def test_ensemble_training():
     agent_param = AL_Agent_Parameters(agentName="Ensemble", batchSize_annotation=batchSize_annotation)
 
     relevant_task_name = task_param_list[0].taskName
-    search_space = BetaDictHandler(relevant_task_name).get_hyperopt_space()
+    search_space = BetaDictHandler().get_hyperopt_space()
 
     best_beta = hp.fmin(objective_function, search_space, algo=algo, max_evals=max_evals, verbose=False)
