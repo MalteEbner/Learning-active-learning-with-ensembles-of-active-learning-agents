@@ -10,37 +10,39 @@ from AL_agents.al_agent_parameters import AL_Agent_Parameters
 from AL_agents.ensemble.train_ensemble_objective_function import train_ensemble_objective_function
 from AL_agents.ensemble.train_ensemble_beta_dict_handler import BetaDictHandler
 from AL_apply_agent_on_task.parallel_run_handler import ParallelRunHandler
+from supervised_learning_tasks.tasks_QA_bAbI.task_bAbI_variantParams import Task_bAbI_variantParams
+from supervised_learning_tasks.tasks_vision.task_Vision_variantParams import Task_Vision_variantParams
 
-startingSize = 8
-annotationBudget = 40
+startingSize = 40
+annotationBudget = 72
 batchSize_annotation = 4
 
-maxNoRunsInParallel = 8
-runs_per_objective_function = 32
+maxNoRunsInParallel = 4
+runs_per_objective_function = 4
 
-max_evals = 60
+max_evals = 100
 
 algo = [hp.atpe.suggest, hp.tpe.suggest, hp.rand.suggest][0]
 
 '''
 Parameters for monte carlo simulation
 '''
+training_task = ['UCI', 'checkerboard', 'MNIST', 'bAbI'][3]
 task_param_list = []
-if False:
-    variantParams = Task_Vision_variantParams(dataset='MNIST', repr_1d_type='tSNE')
-    task_param_list += [Task_Parameters(taskName="model_Vision", variantParams=variantParams)]
-if False:
-    task_param_list += [Task_Parameters(taskName="model_checkerboard", variantParams="2x2")]
-    task_param_list += [Task_Parameters(taskName="model_checkerboard", variantParams="2x2_rotated")]
-if True:
+if training_task == 'UCI':
     UCI_Datasets = ['2-breast_cancer', '3-diabetis', '4-flare_solar',
                     '5-german', '6-heart', '7-mushrooms', '8-waveform', '9-wdbc']
     for uciDataset in UCI_Datasets:
         task_param_list += [Task_Parameters(taskName="model_UCI", variantParams=uciDataset)]
-if False:
+if training_task == 'checkerboard':
+    task_param_list += [Task_Parameters(taskName="model_checkerboard", variantParams="2x2")]
+    task_param_list += [Task_Parameters(taskName="model_checkerboard", variantParams="2x2_rotated")]
+if training_task == "MNIST":
+    variantParams = Task_Vision_variantParams(dataset='MNIST', repr_1d_type='tSNE')
+    task_param_list += [Task_Parameters(taskName="model_Vision", variantParams=variantParams)]
+if training_task == 'bAbI':
     task_bAbI_variantParams = Task_bAbI_variantParams(challenge_type='single_supporting_fact_10k')
-    # task_bAbI_variantParams = Task_bAbI_variantParams(challenge_type='two_supporting_facts_10k')
-    task_param_list += [Task_Parameters(taskName="model_bAbI_memoryNetwork", variantParams=task_bAbI_variantParams)]
+    task_param_list += [Task_Parameters(taskName="model_bAbI ", variantParams=task_bAbI_variantParams)]
 
 task_names = list([task_param.__shortRepr__() for task_param in task_param_list])
 task_param_list *= int(runs_per_objective_function / len(task_param_list))
