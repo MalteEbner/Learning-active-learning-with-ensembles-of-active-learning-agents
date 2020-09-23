@@ -25,7 +25,9 @@ from supervised_learning_tasks.tasks_QA_bAbI.task_bAbI_variantParams import Task
 
 class Task_bAbI_memoryNetwork(Task_KERAS):
 
-    def __init__(self,variantParams: Task_bAbI_variantParams, verboseInit: bool=False):
+    def __init__(self,variantParams: Task_bAbI_variantParams = None, verboseInit: bool=False):
+        if variantParams is None:
+            variantParams = Task_bAbI_variantParams()
         self.challenge_type = variantParams.type
         Task_KERAS.__init__(self,no_epochs=variantParams.no_epochs,verboseInit=verboseInit)
 

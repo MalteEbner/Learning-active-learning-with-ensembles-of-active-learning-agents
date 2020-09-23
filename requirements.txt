@@ -7,3 +7,5 @@ jsonpickle==1.4.1
 tensorflow-gpu==2.3.0
 matplotlib==3.3.2
 ray==0.8.7
+pytest==6.0.2
+sklearn==0.0

@@ -5,7 +5,9 @@ from supervised_learning_tasks.task_supervised_randomForest import Task_randomFo
 
 class Task_Checkerboard_randomForest(Task_randomForest):
 
-    def __init__(self,variantParams: str='4x4', verboseInit: bool=False):
+    def __init__(self,variantParams: str=None, verboseInit: bool=False):
+        if variantParams is None:
+            variantParams = '4x4'
         if variantParams not in ['2x2', '4x4', '2x2_rotated']:
             raise ValueError
         self.type = variantParams

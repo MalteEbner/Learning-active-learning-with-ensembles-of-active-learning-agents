@@ -13,6 +13,9 @@ class Task_KERAS(Task_supervised):
         self.model = self.define_model()
         self.no_epochs = no_epochs
 
+    def getNoTrainingSamples(self) -> int:
+        return self.get_y_train().shape[0]
+
     def resetModel(self):
         self.model.set_weights(self.initialWeights)
 

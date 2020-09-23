@@ -25,8 +25,8 @@ def get_application_config(taskName):
         usualBatchSize_random = 32
         startingSize = 8
         annotation_budget = 200
-        n_jobs = 12  # number of cores to use in parallel
-        noRepetitions = 12  # number of runs per agent (for confidence intervals)
+        n_jobs = 8  # number of cores to use in parallel
+        noRepetitions = 32  # number of runs per agent (for confidence intervals)
 
     elif taskName == "model_Vision":
         variantParams = Task_Vision_variantParams(dataset='MNIST', repr_1d_type='tSNE')
@@ -39,7 +39,7 @@ def get_application_config(taskName):
         n_jobs = 26  # number of cores to use in parallel
         noRepetitions = 104  # number of runs per agent (for confidence intervals)
 
-    elif taskName == "model_bAbI_memoryNetwork":
+    elif taskName == "model_bAbI":
         task_bAbI_variantParams = Task_bAbI_variantParams(challenge_type='single_supporting_fact_10k')
         task_bAbI_variantParams = Task_bAbI_variantParams(challenge_type='two_supporting_facts_10k')
         task_params = Task_Parameters(taskName=taskName ,variantParams=task_bAbI_variantParams)

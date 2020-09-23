@@ -14,7 +14,7 @@ class Task_Parameters():
     def createTask(self,verboseInit=False) -> Task_supervised:
         variantParams = self.variantParams
 
-        if self.taskName == "model_bAbI_memoryNetwork":
+        if self.taskName == "model_bAbI":
             task = Task_bAbI_memoryNetwork(variantParams=variantParams,verboseInit=verboseInit)
 
         elif self.taskName == "model_Vision":

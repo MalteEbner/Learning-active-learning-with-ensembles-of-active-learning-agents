@@ -14,7 +14,9 @@ from supervised_learning_tasks.task_supervised_randomForest import Task_randomFo
 
 class Task_UCI_randomForest(Task_randomForest):
 
-    def __init__(self,variantParams: str, verboseInit: bool=False):
+    def __init__(self,variantParams: str = None, verboseInit: bool=False):
+        if variantParams is None:
+            variantParams = '0-adult'
         UCI_Datasets = ['0-adult', '1-australian', '2-breast_cancer', '3-diabetis', '4-flare_solar',
                            '5-german', '6-heart', '7-mushrooms', '8-waveform', '9-wdbc', '10-spam']
         if variantParams not in UCI_Datasets:

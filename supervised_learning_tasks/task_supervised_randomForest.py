@@ -13,6 +13,8 @@ class Task_randomForest(Task_supervised):
         self.classifier = self.define_classifier()
 
 
+    def getNoTrainingSamples(self) -> int:
+        return self.get_y_train().shape[0]
 
     def resetModel(self):
         self.classifier = self.define_classifier()
@@ -50,10 +52,6 @@ class Task_randomForest(Task_supervised):
             return self.y_test
         else:
             raise NotImplementedError
-
-    def getNoTrainingSamples(self) -> int:
-        return self.get_y_train().shape[0]
-
 
     def define_classifier(self, hyperparamDict: dict={}):
         '''
