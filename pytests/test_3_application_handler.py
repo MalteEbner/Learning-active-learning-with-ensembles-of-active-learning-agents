@@ -13,6 +13,9 @@ def _test_application_handler(task_name):
     (task_params, base_dataset, usualBatchSize, usualBatchSize_random,
      al_params, n_jobs, noRepetitions) = get_application_config(task_name)
 
+    al_params.startingSize = 40
+    al_params.annotationBudget = 48
+
     # define application handler
     agent_params = AL_Agent_Parameters(agentName="Random",batchSize_annotation=4,batchSize_agent=-1)
     application_handler = ApplicationHandler(task_params, al_params, agent_params)

@@ -23,7 +23,7 @@ def test_task_vision():
 
 def test_task_bAbI():
     task_bAbI_variantParams = Task_bAbI_variantParams(challenge_type='two_supporting_facts_10k')
-    task_params = Task_Parameters(taskName="model_bAbI_memoryNetwork", variantParams=task_bAbI_variantParams)
+    task_params = Task_Parameters(taskName="model_bAbI", variantParams=task_bAbI_variantParams)
     _test_task_params(task_params)
 
 
