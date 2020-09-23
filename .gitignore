@@ -127,3 +127,4 @@ dmypy.json
 # Pycharm environment
 .idea
 venv_windows
+pytests/tests_application_handlers
