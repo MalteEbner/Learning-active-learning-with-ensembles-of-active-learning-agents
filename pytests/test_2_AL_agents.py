@@ -8,8 +8,7 @@ from AL_agents.al_agent_parameters import AL_Agent_Parameters
 def _apply_single_heuristic(agent_parameters: AL_Agent_Parameters):
     agent = agent_parameters.createAgent()
 
-    al_parameters = AL_Parameters(startingSize=8, annotationBudget=24)
-    al_parameters.batchSize_annotation = 32
+    al_parameters = AL_Parameters(startingSize=8, annotationBudget=16)
     task_params = Task_Parameters(taskName="model_checkerboard", variantParams="2x2_rotated")
     task = task_params.createTask()
 
