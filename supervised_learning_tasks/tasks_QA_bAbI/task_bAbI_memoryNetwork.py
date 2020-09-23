@@ -58,7 +58,6 @@ class Task_bAbI_memoryNetwork(Task_KERAS):
         return losses.SparseCategoricalCrossentropy
 
     def get_samples_repr_1d(self,sampleIDs: List[int] = 'all') -> dict:
-        sampleInfo = dict()
         if not hasattr(self,"samples_repr_1d"):
             inputs_train, queries_train = self.get_x_train()
             model_repr_1d = Model(inputs= [self.model.layers[0].input,self.model.layers[1].input],
@@ -69,8 +68,7 @@ class Task_bAbI_memoryNetwork(Task_KERAS):
             samples_repr_1d = np.concatenate([self.samples_repr_1d[i,None] for i in sampleIDs])
         else:
             samples_repr_1d = self.samples_repr_1d
-        sampleInfo["samples_repr_1d"] = samples_repr_1d
-        return sampleInfo
+        return samples_repr_1d
 
 
     def define_model(self,params: dict=None):
