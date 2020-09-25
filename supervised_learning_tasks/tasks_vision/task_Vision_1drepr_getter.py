@@ -1,70 +1,68 @@
 import numpy as np
 import time
 import os
-#import task_Vision_CNN
-#import task_Vision_variantParams
 
 
-class Vision_1dRepr():
-    def __init__(self, dataset: str="MNIST", _type: str= "PCA", n_components: int=200):
-        allowedTypes = ["PCA", "tSNE", "resnet"]
-        if not _type in allowedTypes:
-            print(f"ERROR: type must be one of {allowedTypes}, but is {_type}.")
+class Vision1dRepr():
+    def __init__(self, dataset: str = "MNIST", _type: str = "PCA", n_components: int = 200):
+        allowed_types = ["PCA", "tSNE", "resnet"]
+        if _type not in allowed_types:
+            print(f"ERROR: type must be one of {allowed_types}, but is {_type}.")
             raise ValueError
         if _type == 'tSNE':
             if n_components >= 4:
-                errorString = f"ERROR: n_components for tSNE must be smaller than 4, but is {n_components}. "
-                errorString += f"Using 3 components instead."
-                print(errorString)
+                error_string = f"ERROR: n_components for tSNE must be smaller than 4, but is {n_components}. "
+                error_string += f"Using 3 components instead."
+                print(error_string)
                 n_components = 3
         if _type == 'resnet':
-            n_components = 2048 # resnet always has 2048 components
+            n_components = 2048  # resnet always has 2048 components
 
         self.type = _type
         self.n_components = n_components
         self.dataset = dataset
 
         dirname = os.path.dirname(__file__)
-        dirname = os.path.join(dirname,f'1d_reprs_{self.type}')
-        filename = os.path.join(dirname,f'{self.dataset}_x_train_repr_1d_{n_components}components.npy')
+        dirname = os.path.join(dirname, f'1d_reprs_{self.type}')
+        filename = os.path.join(dirname, f'{self.dataset}_x_train_repr_1d_{n_components}components.npy')
         self.filename = filename
 
-    def getRepr_computed(self, x_train: np.ndarray):
+    def get_repr_computed(self, x_train: np.ndarray):
         start = time.time()
         print("Starting encoding to 1d-repr at time 0.")
 
         if self.type == "PCA":
-            repr = self.computeRepr_PCA(x_train)
+            repr = self.compute_repr_PCA(x_train)
         elif self.type == "tSNE":
-            repr = self.computeRepr_tSNE(x_train)
+            repr = self.compute_repr_tSNE(x_train)
         elif self.type == "resnet":
-            repr = self.computeRepr_Resnet(x_train,start)
+            repr = self.compute_repr_resnet(x_train, start)
 
         print(f'Ended encoding at time {time.time() - start}.')
 
         return repr
 
-    def generateReprToFile(self,x_train):
-        repr = self.getRepr_computed(x_train)
-        os.makedirs(os.path.dirname(self.filename),exist_ok=True)
-        np.save(self.filename,repr)
+    def generate_repr_to_file(self, x_train):
+        repr = self.get_repr_computed(x_train)
+        os.makedirs(os.path.dirname(self.filename), exist_ok=True)
+        np.save(self.filename, repr)
         return repr
 
-    def getRepr_fromFile(self,x_train):
+    def get_repr_from_file(self, x_train):
         try:
             repr = np.load(self.filename)
         except Exception as e:
             print(f"Error opening file {self.filename}: {e}")
-            repr = self.generateReprToFile(x_train)
+            repr = self.generate_repr_to_file(x_train)
 
         return repr
 
-    def plotRepr(self,y_train):
+    def plot_repr(self, y_train):
         n_samples = len(y_train)
         # n_samples = 7000
         sampleIDs = list(range(n_samples))
 
-        embeddings = self.getRepr_fromFile([])
+        embeddings = self.get_repr_from_file([])
         labels_one_hot = y_train
         labels = np.argmax(labels_one_hot, axis=1)
         N_classes = labels_one_hot.shape[1]
@@ -85,17 +83,13 @@ class Vision_1dRepr():
         ax.legend()
         ax.grid(True)
 
-        filename = os.path.splitext(self.filename)[0] +'png'
+        filename = os.path.splitext(self.filename)[0] + 'png'
         plt.savefig(filename)
         plt.show()
 
+    def compute_repr_tSNE(self, x_train: np.ndarray):
 
-
-    def computeRepr_tSNE(self,x_train: np.ndarray):
-
-
-
-        x_train_withPCA = self.computeRepr_PCA(x_train,200)
+        x_train_withPCA = self.compute_repr_PCA(x_train, 200)
 
         from sklearn.manifold import TSNE
         tsne = TSNE(n_components=self.n_components, verbose=True)
@@ -103,7 +97,7 @@ class Vision_1dRepr():
 
         return x_train_withTSNE
 
-    def computeRepr_PCA(self, x_train: np.ndarray, n_components: int= -1):
+    def compute_repr_PCA(self, x_train: np.ndarray, n_components: int = -1):
         if n_components == -1:
             n_components = self.n_components
 
@@ -121,7 +115,7 @@ class Vision_1dRepr():
 
         return x_train_withPCA
 
-    def computeRepr_Resnet(self,x_train: np.ndarray,startTime: float):
+    def compute_repr_resnet(self, x_train: np.ndarray, startTime: float):
         from tensorflow.keras.applications import resnet50
         from tensorflow import stack, concat, squeeze
         from tensorflow.compat.v1.image import resize_images
@@ -130,14 +124,14 @@ class Vision_1dRepr():
         # resize function
         target_size = 224
 
-        def encodeSamples(x_sample):
-            batchSize = 1000
-            noSamples = x_sample.shape[0]
+        def encode_samples(x_sample):
+            batch_size = 1000
+            no_samples = x_sample.shape[0]
             index = 0
             x_features = []
-            while index < noSamples:
+            while index < no_samples:
                 print("encoding sample %d at time %f" % (index, (time.time() - startTime)))
-                end = min(index + batchSize, noSamples)
+                end = min(index + batch_size, no_samples)
                 x = x_sample[index:end]
                 if x.shape[-1] == 1:  # add 2 dimensions to make rgb sample out of black-white-sample
                     x = concat((x,) * 3, axis=-1)
@@ -146,7 +140,7 @@ class Vision_1dRepr():
                 x = resnet50.preprocess_input(x)
                 x_feat = intermediate_layer_model.predict(x, workers=16)
                 x_features += [x_feat]
-                index += batchSize
+                index += batch_size
             x_feat = concat(x_features, axis=0)
             return x_feat
 
@@ -159,8 +153,8 @@ class Vision_1dRepr():
         # intermediate_layer_model.compile(loss="mse",optimizer="sgd")
 
         def encode(x_samples):
-            encodedSamples = encodeSamples(x_samples)
-            return encodedSamples
+            encoded_samples = encode_samples(x_samples)
+            return encoded_samples
 
         # encode training data
         x_train_repr_1d = encode(x_train)

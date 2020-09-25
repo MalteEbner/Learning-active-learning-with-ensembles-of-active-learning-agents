@@ -11,7 +11,7 @@ from tensorflow.keras.layers import add, dot, concatenate
 from tensorflow.keras.layers import LSTM
 from tensorflow.keras.regularizers import l1_l2
 from tensorflow.keras.utils import get_file
-from tensorflow.keras.optimizers import RMSprop,Adagrad,Adam,SGD
+from tensorflow.keras.optimizers import RMSprop, Adagrad, Adam, SGD
 from tensorflow.keras.callbacks import EarlyStopping
 from tensorflow.keras import losses
 from tensorflow.keras.preprocessing.sequence import pad_sequences
@@ -19,96 +19,90 @@ from tensorflow.keras import optimizers
 from tensorflow import convert_to_tensor
 import numpy as np
 
-from supervised_learning_tasks.task_supervised_keras import Task_KERAS
-from supervised_learning_tasks.tasks_QA_bAbI.task_bAbI_variantParams import Task_bAbI_variantParams
+from supervised_learning_tasks.task_supervised_keras import TaskKeras
 
 
-class Task_bAbI_memoryNetwork(Task_KERAS):
+class TaskBabiMemoryNetwork(TaskKeras):
 
-    def __init__(self,variantParams: Task_bAbI_variantParams = None, verboseInit: bool=False):
-        if variantParams is None:
-            variantParams = Task_bAbI_variantParams()
-        self.challenge_type = variantParams.type
-        Task_KERAS.__init__(self,no_epochs=variantParams.no_epochs,verboseInit=verboseInit)
+    def __init__(self, dataset: str = 'single_supporting_fact', verbose_init: bool = False):
+        if dataset not in ['single_supporting_fact','two_supporting_facts']:
+            raise ValueError
+        self.dataset = dataset
+        TaskKeras.__init__(self, verbose_init=verbose_init)
 
-    def resetModel(self):
-        self.model.set_weights(self.initialWeights)
-
-    def get_x_train(self, sampleIDs: List[int]="all") -> list:
-        if sampleIDs=="all":
-            return [self.inputs_train,self.queries_train]
+    def get_x_train(self, sample_IDs: List[int] = "all") -> List[np.ndarray]:
+        if sample_IDs == "all":
+            return [self.inputs_train, self.queries_train]
         else:
-            inputs_train = np.concatenate([self.inputs_train[i,None] for i in sampleIDs])
-            queries_train = np.concatenate([self.queries_train[i,None] for i in sampleIDs])
-            return [inputs_train,queries_train]
+            inputs_train = np.concatenate([self.inputs_train[i, None] for i in sample_IDs])
+            queries_train = np.concatenate([self.queries_train[i, None] for i in sample_IDs])
+            return [inputs_train, queries_train]
 
-    def get_y_train(self, sampleIDs: List[int]="all") -> list:
-        if sampleIDs=="all":
+    def get_y_train(self, sampleIDs: List[int] = "all") -> np.ndarray:
+        if sampleIDs == "all":
             return self.answers_train
         else:
-            return np.concatenate([self.answers_train[i,None] for i in sampleIDs])
+            return np.concatenate([self.answers_train[i, None] for i in sampleIDs])
 
-    def get_x_test(self) -> list:
-        return [self.inputs_test,self.queries_test]
+    def get_x_test(self) -> List[np.ndarray]:
+        return [self.inputs_test, self.queries_test]
 
-    def get_y_test(self) -> list:
+    def get_y_test(self) -> np.ndarray:
         return self.answers_test
 
-    def getLossFunction(self):
+    def get_loss_function(self):
         return losses.SparseCategoricalCrossentropy
 
-    def get_samples_repr_1d(self,sampleIDs: List[int] = 'all') -> dict:
-        if not hasattr(self,"samples_repr_1d"):
+    def get_samples_repr_1d(self, sample_IDs: List[int] = 'all') -> dict:
+        if not hasattr(self, "samples_repr_1d"):
             inputs_train, queries_train = self.get_x_train()
-            model_repr_1d = Model(inputs= [self.model.layers[0].input,self.model.layers[1].input],
-                                      outputs = self.model.get_layer("repr_1d").output)
-            samples_repr_1d = model_repr_1d.predict([inputs_train,queries_train])
-            self.samples_repr_1d = np.reshape(samples_repr_1d,newshape=(samples_repr_1d.shape[0],-1))
-        if not isinstance(sampleIDs,str) or not sampleIDs == 'all':
-            samples_repr_1d = np.concatenate([self.samples_repr_1d[i,None] for i in sampleIDs])
+            model_repr_1d = Model(inputs=[self.model.layers[0].input, self.model.layers[1].input],
+                                  outputs=self.model.get_layer("repr_1d").output)
+            samples_repr_1d = model_repr_1d.predict([inputs_train, queries_train])
+            self.samples_repr_1d = np.reshape(samples_repr_1d, newshape=(samples_repr_1d.shape[0], -1))
+        if not isinstance(sample_IDs, str) or not sample_IDs == 'all':
+            samples_repr_1d = np.concatenate([self.samples_repr_1d[i, None] for i in sample_IDs])
         else:
             samples_repr_1d = self.samples_repr_1d
         return samples_repr_1d
 
-
-    def define_model(self,params: dict=None):
-
+    def define_model(self, params: dict = None):
 
         if params == None:
             params = dict()
-        regularizationFactor_l1 = params.get("regularizationFactor_l1",5.36e-5)
-        regularizationFactor_l2 = params.get("regularizationFactor_l2", 1.38e-4)
-        dropoutRate = params.get("dropoutRate",0.265)
-        learningRate = params.get("learningRate",0.0038)
-        optimizer = params.get("optimizer",RMSprop)
-        lstmNeurons = int(params.get("lstmNeurons",32))
-        kernel_regularizer = l1_l2(regularizationFactor_l1, regularizationFactor_l2)
+        regularization_factor_l1 = params.get("regularization_factor_l1", 5.36e-5)
+        regularization_factor_l2 = params.get("regularization_factor_l2", 1.38e-4)
+        dropout_rate = params.get("dropout_rate", 0.265)
+        learning_rate = params.get("learning_rate", 0.0038)
+        optimizer = params.get("optimizer", RMSprop)
+        lstm_neurons = int(params.get("lstm_neurons", 32))
+        kernel_regularizer = l1_l2(regularization_factor_l1, regularization_factor_l2)
 
         # placeholders
-        input_sequence = Input((self.dataParams.story_maxlen,))
-        question = Input((self.dataParams.query_maxlen,))
+        input_sequence = Input((self.data_params.story_maxlen,))
+        question = Input((self.data_params.query_maxlen,))
 
         # encoders
         # embed the input sequence into a sequence of vectors
         input_encoder_m = Sequential()
-        input_encoder_m.add(Embedding(input_dim=self.dataParams.vocab_size,
+        input_encoder_m.add(Embedding(input_dim=self.data_params.vocab_size,
                                       output_dim=64))
-        input_encoder_m.add(Dropout(dropoutRate))
+        input_encoder_m.add(Dropout(dropout_rate))
         # output: (samples, story_maxlen, embedding_dim)
 
         # embed the input into a sequence of vectors of size query_maxlen
         input_encoder_c = Sequential()
-        input_encoder_c.add(Embedding(input_dim=self.dataParams.vocab_size,
-                                      output_dim=self.dataParams.query_maxlen))
-        input_encoder_c.add(Dropout(dropoutRate))
+        input_encoder_c.add(Embedding(input_dim=self.data_params.vocab_size,
+                                      output_dim=self.data_params.query_maxlen))
+        input_encoder_c.add(Dropout(dropout_rate))
         # output: (samples, story_maxlen, query_maxlen)
 
         # embed the question into a sequence of vectors
         question_encoder = Sequential()
-        question_encoder.add(Embedding(input_dim=self.dataParams.vocab_size,
+        question_encoder.add(Embedding(input_dim=self.data_params.vocab_size,
                                        output_dim=64,
-                                       input_length=self.dataParams.query_maxlen))
-        question_encoder.add(Dropout(dropoutRate))
+                                       input_length=self.data_params.query_maxlen))
+        question_encoder.add(Dropout(dropout_rate))
         # output: (samples, query_maxlen, embedding_dim)
 
         # encode input sequence and questions (which are indices)
@@ -128,84 +122,84 @@ class Task_bAbI_memoryNetwork(Task_KERAS):
         response = Permute((2, 1))(response)  # (samples, query_maxlen, story_maxlen)
 
         # concatenate the match matrix with the question vector sequence
-        answer = concatenate([response, question_encoded],name="repr_1d")
+        answer = concatenate([response, question_encoded], name="repr_1d")
 
         # the original paper uses a matrix multiplication for this reduction step.
         # we choose to use a RNN instead.
-        answer = Dropout(learningRate)(answer)
-        answer = LSTM(lstmNeurons,kernel_regularizer=kernel_regularizer)(answer)  # (samples, 32)
+        answer = Dropout(learning_rate)(answer)
+        answer = LSTM(lstm_neurons, kernel_regularizer=kernel_regularizer)(answer)  # (samples, 32)
 
         # one regularization layer -- more would probably be needed.
-        answer = Dropout(learningRate)(answer)
-        answer = Dense(self.dataParams.vocab_size,kernel_regularizer=kernel_regularizer)(answer)  # (samples, vocab_size)
+        answer = Dropout(learning_rate)(answer)
+        answer = Dense(self.data_params.vocab_size, kernel_regularizer=kernel_regularizer)(
+            answer)  # (samples, vocab_size)
         # we output a probability distribution over the vocabulary
         answer = Activation('softmax')(answer)
 
         # build the final model
         model = Model([input_sequence, question], answer)
-        optimizer = optimizer(lr=learningRate)
+        optimizer = optimizer(lr=learning_rate)
         model.compile(optimizer=optimizer, loss='sparse_categorical_crossentropy',
                       metrics=['accuracy'])
 
-        self.initialWeights = model.get_weights()
         return model
 
-    def model_fit(self,x_train, y_train,batch_size=2,epochs=32,verbose=False,withAugmentation=False):
+    def model_fit(self, x_train, y_train, batch_size=2, epochs=32, verbose=False, withAugmentation=False):
 
         return self.model.fit(x_train, y_train,
-          batch_size=batch_size,
-          epochs=epochs,
-          verbose=verbose,
-          workers=1,
-          use_multiprocessing=0)
+                              batch_size=batch_size,
+                              epochs=epochs,
+                              verbose=verbose,
+                              workers=1,
+                              use_multiprocessing=0)
 
-    def trainWithHyperopt(self,noRandomSamples: int = 1000, noIters: int=100):
+    def train_with_hyperopt(self, no_random_samples: int = 1000, no_iterations: int = 100):
         from hyperopt import fmin, tpe, rand, hp, STATUS_OK, Trials, space_eval
 
-        paramSpace = dict()
-        #optimizers = [SGD, Adam,Adagrad,RMSprop]
-        #optimizers = optimizers[1:2]
-        names = ["regularizationFactor_l1","regularizationFactor_l2","dropoutRate","learningRate",
-                 "optimizer","lstmNeurons","noEpochs","batch_size"]
-        paramSpace[names[0]] = hp.loguniform(names[0], np.log(1e-5), np.log(9e-4))
-        paramSpace[names[1]] = hp.loguniform(names[1], np.log(1e-5), np.log(9e-4))
-        paramSpace[names[2]] = hp.uniform(names[2], 0.1, 0.3)
-        paramSpace[names[3]] = hp.loguniform(names[3], np.log(1e-4), np.log(90e-4))
-        #paramSpace[names[4]] = hp.choice(names[4], optimizers)
-        paramSpace[names[5]] = hp.loguniform(names[5], np.log(12),np.log(32+1),q=1)
-        paramSpace[names[6]] = hp.loguniform(names[6], np.log(20), np.log(50+1), q=1)
-        #paramSpace[names[7]] = hp.loguniform(names[7], np.log(1), np.log(8+1), q=1)
-
+        param_space = dict()
+        # optimizers = [SGD, Adam,Adagrad,RMSprop]
+        # optimizers = optimizers[1:2]
+        names = ["regularization_factor_l1", "regularization_factor_l2", "dropout_rate", "learning_rate",
+                 "optimizer", "lstm_neurons", "no_epochs", "batch_size"]
+        param_space[names[0]] = hp.loguniform(names[0], np.log(1e-5), np.log(9e-4))
+        param_space[names[1]] = hp.loguniform(names[1], np.log(1e-5), np.log(9e-4))
+        param_space[names[2]] = hp.uniform(names[2], 0.1, 0.3)
+        param_space[names[3]] = hp.loguniform(names[3], np.log(1e-4), np.log(90e-4))
+        # param_space[names[4]] = hp.choice(names[4], optimizers)
+        param_space[names[5]] = hp.loguniform(names[5], np.log(12), np.log(32 + 1), q=1)
+        param_space[names[6]] = hp.loguniform(names[6], np.log(20), np.log(50 + 1), q=1)
+        # param_space[names[7]] = hp.loguniform(names[7], np.log(1), np.log(8+1), q=1)
 
         # train
         x_test = self.get_x_test()
         y_test = self.get_y_test()
-        noTrainingSamples = len(self.get_x_train()[0])
+        no_training_samples = len(self.get_x_train()[0])
 
-        def objectiveFunction(hyperparamDict:dict,verbose=False) -> float:
-            self.model = self.define_model(hyperparamDict)
-            #randomly sample subset
-            sampleIDs = np.random.choice(range(noTrainingSamples),size=noRandomSamples,replace=False)
-            noEpochs = int(hyperparamDict.get('noEpochs',100))
-            batch_size = int(hyperparamDict.get('batch_size',32))
-            loss, acc = self.trainOnBatch(sampleIDs=sampleIDs, epochs=noEpochs,resetWeights=False,batch_size=batch_size)
-            print("loss:" + str(loss) + " acc: " + str(acc) + " hyperparams: "+ str(hyperparamDict))
+        def objective_function(hyperparam_dict: dict, verbose=False) -> float:
+            self.model = self.define_model(hyperparam_dict)
+            # randomly sample subset
+            sample_IDs = np.random.choice(range(no_training_samples), size=no_random_samples, replace=False)
+            no_epochs = int(hyperparam_dict.get('no_epochs', self.get_no_epochs()))
+            batch_size = int(hyperparam_dict.get('batch_size', 32))
+            loss, acc = self.train_on_batch(sample_IDs=sample_IDs, epochs=no_epochs, resetWeights=False,
+                                            batch_size=batch_size)
+            print("loss:" + str(loss) + " acc: " + str(acc) + " hyperparams: " + str(hyperparam_dict))
             if np.isnan(loss):
                 print("ERROR: validation loss is nan with following hyperparams:")
-                print(hyperparamDict)
+                print(hyperparam_dict)
                 raise ValueError
             return -1 * acc
 
-        #perform optimization
+        # perform optimization
         # minimize the objective over the space
         from hyperopt import fmin, atpe, tpe
-        best = fmin(objectiveFunction, paramSpace, algo=atpe.suggest, max_evals=noIters,verbose=True)
+        best = fmin(objective_function, param_space, algo=atpe.suggest, max_evals=no_iterations, verbose=True)
         print("best params: " + str(best))
-        bestAcc = objectiveFunction(best,verbose=True)
+        bestAcc = objective_function(best, verbose=True)
         print("best validation acc:" + str(bestAcc))
-        #print("weights:" + str(list(self.model.get_weights()[0])))
+        # print("weights:" + str(list(self.model.get_weights()[0])))
 
-    def get_dataset(self,verboseInit):
+    def get_dataset(self, verbose_init):
         try:
             path = get_file('babi-tasks-v1-2.tar.gz',
                             origin='https://s3.amazonaws.com/text-datasets/'
@@ -219,16 +213,16 @@ class Task_bAbI_memoryNetwork(Task_KERAS):
 
         challenges = {
             # QA1 with 10,000 samples
-            'single_supporting_fact_10k': 'tasks_1-20_v1-2/en-10k/qa1_'
+            'single_supporting_fact': 'tasks_1-20_v1-2/en-10k/qa1_'
                                           'single-supporting-fact_{}.txt',
             # QA2 with 10,000 samples
-            'two_supporting_facts_10k': 'tasks_1-20_v1-2/en-10k/qa2_'
+            'two_supporting_facts': 'tasks_1-20_v1-2/en-10k/qa2_'
                                         'two-supporting-facts_{}.txt',
         }
-        challenge = challenges[self.challenge_type]
+        challenge = challenges[self.dataset]
 
-        if verboseInit:
-            print('Extracting stories for the challenge:', self.challenge_type)
+        if verbose_init:
+            print('Extracting stories for the challenge:', self.dataset)
         with tarfile.open(path) as tar:
             train_stories = self.get_stories(tar.extractfile(challenge.format('train')))
             test_stories = self.get_stories(tar.extractfile(challenge.format('test')))
@@ -242,10 +236,10 @@ class Task_bAbI_memoryNetwork(Task_KERAS):
         vocab_size = len(vocab) + 1
         story_maxlen = max(map(len, (x for x, _, _ in train_stories + test_stories)))
         query_maxlen = max(map(len, (x for _, x, _ in train_stories + test_stories)))
-        DataParams = namedtuple('dataParams', 'vocab_size story_maxlen query_maxlen')
-        self.dataParams = DataParams(vocab_size,story_maxlen,query_maxlen)
+        DataParams = namedtuple('data_params', 'vocab_size story_maxlen query_maxlen')
+        self.data_params = DataParams(vocab_size, story_maxlen, query_maxlen)
 
-        if verboseInit:
+        if verbose_init:
             print('-')
             print('Vocab size:', vocab_size, 'unique words')
             print('Story max length:', story_maxlen, 'words')
@@ -259,10 +253,10 @@ class Task_bAbI_memoryNetwork(Task_KERAS):
             print('Vectorizing the word sequences...')
 
         word_idx = dict((c, i + 1) for i, c in enumerate(vocab))
-        self.inputs_train, self.queries_train, self.answers_train = self.vectorize_stories(train_stories,word_idx)
-        self.inputs_test, self.queries_test, self.answers_test = self.vectorize_stories(test_stories,word_idx)
+        self.inputs_train, self.queries_train, self.answers_train = self.vectorize_stories(train_stories, word_idx)
+        self.inputs_test, self.queries_test, self.answers_test = self.vectorize_stories(test_stories, word_idx)
 
-        if verboseInit:
+        if verbose_init:
             print('-')
             print('inputs: integer tensor of shape (samples, max_length)')
             print('inputs_train shape:', self.inputs_train.shape)
@@ -276,12 +270,6 @@ class Task_bAbI_memoryNetwork(Task_KERAS):
             print('answers_train shape:', self.answers_train.shape)
             print('answers_test shape:', self.answers_test.shape)
             print('-')
-
-
-
-
-
-
 
     def tokenize(self, sent):
         '''Return the tokens of a sentence including punctuation.
@@ -322,7 +310,7 @@ class Task_bAbI_memoryNetwork(Task_KERAS):
                 story.append(sent)
         return data
 
-    def get_stories(self,f, only_supporting=False, max_length=None):
+    def get_stories(self, f, only_supporting=False, max_length=None):
         '''Given a file name, read the file,
         retrieve the stories,
         and then convert the sentences into a single story.
@@ -342,13 +330,9 @@ class Task_bAbI_memoryNetwork(Task_KERAS):
             inputs.append([word_idx[w] for w in story])
             queries.append([word_idx[w] for w in query])
             answers.append(word_idx[answer])
-        return (pad_sequences(inputs, maxlen=self.dataParams.story_maxlen),
-                pad_sequences(queries, maxlen=self.dataParams.query_maxlen),
+        return (pad_sequences(inputs, maxlen=self.data_params.story_maxlen),
+                pad_sequences(queries, maxlen=self.data_params.query_maxlen),
                 np.array(answers))
 
-
-
-
-
-
-
+    def get_no_epochs(self) -> int:
+        return 100

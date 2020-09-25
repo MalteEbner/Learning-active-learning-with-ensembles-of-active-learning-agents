@@ -32,5 +32,3 @@ class BetaDictHandler:
         self.beta_dict["Uncertainty"] = beta_uncertainty
         self.beta_dict["Diversity"] = beta_diversity
         self.beta_dict["Representative"] = beta_representative
-
-

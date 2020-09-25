@@ -3,11 +3,11 @@ from typing import List
 import numpy as np
 from sklearn.metrics import pairwise_distances, pairwise_distances_argmin_min
 
-from supervised_learning_tasks.task_supervised import Task_supervised
+from supervised_learning_tasks.task_supervised import TaskSupervised
 
 
 class Observation:
-    def __init__(self, task: Task_supervised, labelled_IDs, unlabelled_IDs, batch_IDs):
+    def __init__(self, task: TaskSupervised, labelled_IDs, unlabelled_IDs, batch_IDs):
         self.task = task
         self.labelled_IDs = labelled_IDs
         self.unlabelled_IDs = unlabelled_IDs
@@ -25,7 +25,7 @@ class Observation:
 
     def get_prediction_entropies(self):
         if not 'predictions' in self.batch_independent_features:
-            self.batch_independent_features['predictions'] = self.task.getPredictions(self.unlabelled_IDs)
+            self.batch_independent_features['predictions'] = self.task.get_predictions(self.unlabelled_IDs)
         if not 'prediction_entropies' in self.batch_independent_features:
             probs = self.batch_independent_features['predictions']
             zeros = np.zeros_like(probs)

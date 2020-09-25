@@ -3,26 +3,23 @@ from typing import List, Tuple
 import numpy as np
 from tensorflow.keras.models import Model
 
-from supervised_learning_tasks.task_supervised import Task_supervised
+from supervised_learning_tasks.task_supervised import TaskSupervised
 
 
-class Task_KERAS(Task_supervised):
+class TaskKeras(TaskSupervised):
 
-    def __init__(self, no_epochs: int, verboseInit: bool):
-        self.get_dataset(verboseInit)
+    def __init__(self, verbose_init: bool):
+        self.get_dataset(verbose_init)
         self.model = self.define_model()
-        self.no_epochs = no_epochs
+        self.initial_weights = self.model.get_weights()
 
-    def getNoTrainingSamples(self) -> int:
+    def get_no_training_samples(self) -> int:
         return self.get_y_train().shape[0]
 
-    def resetModel(self):
-        self.model.set_weights(self.initialWeights)
+    def reset_model(self):
+        self.model.set_weights(self.initial_weights)
 
-    def getPredictionShape(self):
-        return self.get_y_train().shape
-
-    def get_x_train(self, sampleIDs: List[int] = "all") -> list:
+    def get_x_train(self, sampleIDs: List[int] = "all") -> np.ndarray:
         if hasattr(self, "x_train"):
             if sampleIDs == "all":
                 return self.x_train
@@ -31,7 +28,7 @@ class Task_KERAS(Task_supervised):
         else:
             raise NotImplementedError
 
-    def get_y_train(self, sampleIDs: List[int] = "all") -> list:
+    def get_y_train(self, sampleIDs: List[int] = "all") -> np.ndarray:
         if hasattr(self, "y_train"):
             if sampleIDs == "all":
                 return self.y_train
@@ -40,62 +37,33 @@ class Task_KERAS(Task_supervised):
         else:
             raise NotImplementedError
 
-    def getLabels(self, sampleIDs: List[int]):
+    def getLabels(self, sampleIDs: List[int]) -> np.ndarray:
         labels = self.get_y_train(sampleIDs)
         return labels
 
-    def get_x_test(self) -> list:
+    def get_x_test(self) -> np.ndarray:
         if hasattr(self, "x_test"):
             return self.x_test
         else:
             raise NotImplementedError
 
-    def get_y_test(self) -> list:
+    def get_y_test(self) -> np.ndarray:
         if hasattr(self, "y_test"):
             return self.y_test
         else:
             raise NotImplementedError
 
-    def getPredictions(self, sampleIDs: List[int]):
-        x_train = self.get_x_train(sampleIDs=sampleIDs)
+    def get_predictions(self, sample_IDs: List[int]) -> np.ndarray:
+        x_train = self.get_x_train(sampleIDs=sample_IDs)
         predictions = self.model.predict(x_train)
         return predictions
 
-    def getModelDependentInfo(self, sampleIDs: List[int]) -> dict:
-        sampleInfo = dict()
-        x_train = self.get_x_train(sampleIDs=sampleIDs)
-        predictions = self.model.predict(x_train)
-        sampleInfo["predictions"] = predictions
-        return sampleInfo
-
-    def trainFully(self, sampleIDs: list = "all") -> Tuple[float, float]:
-        batch_size = 1024
-        if sampleIDs != "all" and len(sampleIDs) > batch_size * 4:
-            batch_size = int(len(sampleIDs) / 4)
-
-        epochs = 32
-        # train
-        x_train = self.get_x_train(sampleIDs)
-        y_train = self.get_y_train(sampleIDs)
-        x_test = self.get_x_test()
-        y_test = self.get_y_test()
-        self.model_fit(x_train, y_train,
-                       batch_size=batch_size,
-                       epochs=epochs,
-                       verbose=1,
-                       validation_data=(x_test, y_test),
-                       withAugmentation=False)
-        score = self.model.evaluate(x_test, y_test, verbose=0)
-        print('Test loss:', score[0])
-        print('Test accuracy:', score[1])
-        return score[0], score[1]
-
-    def trainOnBatch(self, sampleIDs: List[int], verbose=False, batch_size=0) -> Tuple[float, float]:
-        epochs = self.no_epochs
+    def train_on_batch(self, sample_IDs: List[int], verbose=False, batch_size=0) -> Tuple[float, float]:
+        epochs = self.get_no_epochs()
 
         # get subset to train on
-        x_train = self.get_x_train(sampleIDs)
-        y_train = self.get_y_train(sampleIDs)
+        x_train = self.get_x_train(sample_IDs)
+        y_train = self.get_y_train(sample_IDs)
         x_test = self.get_x_test()
         y_test = self.get_y_test()
 
@@ -115,3 +83,10 @@ class Task_KERAS(Task_supervised):
 
     def get_dataset(self, verboseInit=False):
         raise NotImplementedError
+
+    def model_fit(self, x_train, y_train, epochs, batch_size, verbose, withAugmentation):
+        raise NotImplementedError
+
+    def get_no_epochs(self) -> int:
+        raise NotImplementedError
+
