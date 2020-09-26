@@ -93,7 +93,7 @@ class TaskVisionCNN(TaskKeras):
     def get_samples_repr_1d(self, sample_IDs: List[int] = 'all', filename=''):
 
         if not hasattr(self, 'x_train_repr_1d'):
-            self.x_train_repr_1d = self.vision_1dRepr.get_repr_from_file(self.x_train)
+            self.x_train_repr_1d = self.vision_1d_repr_getter.get_repr_from_file(self.x_train)
 
         if isinstance(sample_IDs, str) and sample_IDs == 'all':
             return self.x_train_repr_1d
