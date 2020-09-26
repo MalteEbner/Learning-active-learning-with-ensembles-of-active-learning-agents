@@ -6,7 +6,7 @@ from supervised_learning_tasks.task_parameters import TaskParameters
 
 
 def _test_environment(task_name):
-    al_parameters = ALParameters(startingSize=8, annotation_budget=12)
+    al_parameters = ALParameters(starting_size=8, annotation_budget=12)
     al_parameters.batch_size_annotation = 4
 
     task_params = TaskParameters(task_name=task_name)

@@ -5,7 +5,6 @@ import hyperopt as hp
 import lightgbm  # needed by hyperopt
 import sklearn  # needed by hyperopt
 
-from AL_apply_agent_on_task.parallel_run_handler import ParallelRunHandler
 from supervised_learning_tasks.task_parameters import TaskParameters
 from AL_environment_MDP.al_parameters import ALParameters
 from AL_agents.al_agent_parameters import ALAgentParameters
@@ -23,7 +22,7 @@ def _test_ensemble_training(task_name):
 
     task_param_list = [TaskParameters(task_name)]
 
-    al_params = ALParameters(annotation_budget=annotation_budget, startingSize=starting_size)
+    al_params = ALParameters(annotation_budget=annotation_budget, starting_size=starting_size)
     agent_param = ALAgentParameters(agent_name="Ensemble", batch_size_annotation=batch_size_annotation)
 
     train_ensemble_with_hyperopt(algo, task_param_list, n_jobs, al_params, agent_param, max_evals)

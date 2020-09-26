@@ -46,5 +46,5 @@ def get_application_config(task_name):
 
     else:
         raise ValueError
-    al_parameters = ALParameters(annotation_budget=annotation_budget, startingSize=startingSize)
+    al_parameters = ALParameters(annotation_budget=annotation_budget, starting_size=startingSize)
     return task_params, base_dataset, usualBatchSize, usualBatchSize_random, al_parameters, n_jobs, noRepetitions

@@ -9,7 +9,7 @@ from AL_agents.al_agent_parameters import ALAgentParameters
 def _apply_single_heuristic(agent_parameters: ALAgentParameters):
     agent = agent_parameters.create_agent()
 
-    al_parameters = ALParameters(startingSize=8, annotation_budget=16)
+    al_parameters = ALParameters(starting_size=8, annotation_budget=16)
     al_parameters.batch_size_annotation = 4
     task_params = TaskParameters(task_name="model_checkerboard", dataset="2x2_rotated")
     task = task_params.create_task()

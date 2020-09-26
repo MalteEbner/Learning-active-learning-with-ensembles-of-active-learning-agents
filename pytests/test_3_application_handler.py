@@ -11,7 +11,7 @@ from supervised_learning_tasks.task_parameters import TaskParameters
 def _test_application_handler(task_name):
     test = True
 
-    al_parameters = ALParameters(startingSize=8, annotation_budget=16)
+    al_parameters = ALParameters(starting_size=8, annotation_budget=16)
     task_params = TaskParameters(task_name=task_name)
 
     # define application handler
@@ -29,7 +29,7 @@ def _test_application_handler(task_name):
     file_handler.write_application_handlers_to_file([application_handler])
 
     # plot the results
-    ApplicationHandlerFileHandlerJSON(filename).plot_all_content_with_confidence_intervals()
+    ApplicationHandlerFileHandlerJSON(filename).plot_all_content_with_confidence_intervals(plot_really=False)
 
 
 def _get_test_parameters():
