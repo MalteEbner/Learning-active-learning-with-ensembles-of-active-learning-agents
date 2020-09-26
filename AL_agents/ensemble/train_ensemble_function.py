@@ -27,13 +27,14 @@ def train_ensemble_with_hyperopt(algo, task_param_list, n_jobs, al_params, agent
             print(f"{objective_to_maximize}  {beta_dict}")
             return -1 * objective_to_maximize
 
-        relevant_task_name = task_param_list[0].task_name
         search_space = BetaDictHandler().get_hyperopt_space()
 
         example_beta = hp.pyll.stochastic.sample(search_space)
 
         best_beta = hp.fmin(objective_function, search_space, algo=algo, max_evals=max_evals, verbose=True)
         print(f"best beta: {best_beta}")
+
+    debug_point = 0
 
 
 def get_mean_accuracy_of_agent(
