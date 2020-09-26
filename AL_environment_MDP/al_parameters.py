@@ -3,13 +3,13 @@ from supervised_learning_tasks.task_supervised import TaskSupervised
 
 
 class ALParameters():
-    def __init__(self, annotation_budget: int = 200, startingSize=38):
+    def __init__(self, annotation_budget: int = 200, starting_size=38):
         '''
         @param annotation_budget: the maximum no of samples annotated till the active learning process is stopped
-        @param startingSize: the no of samples annotated in the beginning (reducing the annotation budget)
+        @param starting_size: the no of samples annotated in the beginning (reducing the annotation budget)
         '''
         self.annotationBudget = annotation_budget
-        self.startingSize = startingSize
+        self.startingSize = starting_size
 
     def create_al_environment(self, task: TaskSupervised) -> ALEnvironment:
         al_env = ALEnvironment(self, task)
@@ -21,7 +21,7 @@ class ALParameters():
         attributes.pop("withSimilarities", None)
         attributes.pop("withEstimatedImprovements", None)
         if True:
-            attributes.pop("startingSize", None)
+            attributes.pop("starting_size", None)
         if ignoreBatchSize:
             attributes.pop("batchSize", None)
         return attributes

@@ -29,16 +29,16 @@ if training_task == 'UCI':
     UCI_Datasets = ['2-breast_cancer', '3-diabetis', '4-flare_solar',
                     '5-german', '6-heart', '7-mushrooms', '8-waveform', '9-wdbc']
     for uciDataset in UCI_Datasets:
-        task_param_list += [TaskParameters(taskName="model_UCI", variantParams=uciDataset)]
+        task_param_list += [TaskParameters(task_name="model_UCI", dataset=uciDataset)]
 if training_task == 'checkerboard':
-    task_param_list += [TaskParameters(taskName="model_checkerboard", variantParams="2x2")]
-    task_param_list += [TaskParameters(taskName="model_checkerboard", variantParams="2x2_rotated")]
+    task_param_list += [TaskParameters(task_name="model_checkerboard", dataset="2x2")]
+    task_param_list += [TaskParameters(task_name="model_checkerboard", dataset="2x2_rotated")]
 if training_task == "MNIST":
-    task_param_list += [TaskParameters(taskName="model_Vision", dataset='MNIST')]
+    task_param_list += [TaskParameters(task_name="model_Vision", dataset='MNIST')]
 if training_task == 'bAbI':
-    task_param_list += [TaskParameters(taskName="model_bAbI ", dataset='single_supporting_fact_10k')]
+    task_param_list += [TaskParameters(task_name="model_bAbI ", dataset='single_supporting_fact_10k')]
 
-task_names = list([task_param.__shortRepr__() for task_param in task_param_list])
+task_names = list([task_param.__short_repr__() for task_param in task_param_list])
 task_param_list *= int(runs_per_objective_function / len(task_param_list))
 al_params = ALParameters(annotation_budget=annotation_budget, starting_size=starting_size)
 agent_param = ALAgentParameters(agent_name="Ensemble", batch_size_annotation=batch_size_annotation)

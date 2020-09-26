@@ -77,7 +77,7 @@ class ALEnvironment():
         # calculate Info
         info = dict()
         info["loss"] = loss
-        info["noLabelledSamples"] = len(self.labelled_IDs)
+        info["no_labelled_samples"] = len(self.labelled_IDs)
         info["accuracy"] = accuracy
         # self.initialInfo = info
 
