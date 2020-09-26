@@ -5,7 +5,6 @@ import lightgbm  # needed by hyperopt
 import sklearn  # needed by hyperopt
 from scipy.stats import gmean
 
-from AL_apply_agent_on_task.parallel_run_handler import ParallelRunHandler
 from AL_agents.ensemble.train_ensemble_beta_dict_handler import BetaDictHandler
 from AL_apply_agent_on_task.parallel_run_handler import ParallelRunHandler
 
