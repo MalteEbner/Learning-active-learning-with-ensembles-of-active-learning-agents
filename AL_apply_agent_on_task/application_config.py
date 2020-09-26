@@ -1,15 +1,11 @@
-
-from supervised_learning_tasks.task_parameters import Task_Parameters
-from supervised_learning_tasks.tasks_vision.task_Vision_variantParams import Task_Vision_variantParams
-from supervised_learning_tasks.tasks_QA_bAbI.task_bAbI_variantParams import Task_bAbI_variantParams
-from AL_environment_MDP.al_parameters import AL_Parameters
+from supervised_learning_tasks.task_parameters import TaskParameters
+from AL_environment_MDP.al_parameters import ALParameters
 
 
-def get_application_config(taskName):
-
-    if taskName == "model_UCI":
-        variantParams = ['0-adult' ,'1-australian' ,'10-spam'][2]
-        task_params = Task_Parameters(taskName=taskName ,variantParams=variantParams)
+def get_application_config(task_name):
+    if task_name == "model_UCI":
+        variant_params = ['0-adult', '1-australian', '10-spam'][2]
+        task_params = TaskParameters(task_name=task_name, dataset=variant_params)
         base_dataset = "UCI"
         usualBatchSize = 4
         usualBatchSize_random = 4
@@ -18,8 +14,8 @@ def get_application_config(taskName):
         n_jobs = 104  # number of cores to use in parallel
         noRepetitions = 104  # number of runs per agent (for confidence intervals)
 
-    elif taskName == "model_checkerboard":
-        task_params = Task_Parameters(taskName=taskName ,variantParams="4x4")
+    elif task_name == "model_checkerboard":
+        task_params = TaskParameters(task_name=task_name, dateset="4x4")
         base_dataset = "checkerboard"
         usualBatchSize = 32
         usualBatchSize_random = 32
@@ -28,9 +24,8 @@ def get_application_config(taskName):
         n_jobs = 8  # number of cores to use in parallel
         noRepetitions = 32  # number of runs per agent (for confidence intervals)
 
-    elif taskName == "model_Vision":
-        variantParams = Task_Vision_variantParams(dataset='MNIST', repr_1d_type='tSNE')
-        task_params = Task_Parameters(taskName="model_Vision", variantParams=variantParams)
+    elif task_name == "model_Vision":
+        task_params = TaskParameters(task_name="model_Vision", dataset="MNIST")
         base_dataset = "CIFAR10"
         usualBatchSize = 32
         usualBatchSize_random = 8
@@ -39,10 +34,8 @@ def get_application_config(taskName):
         n_jobs = 26  # number of cores to use in parallel
         noRepetitions = 104  # number of runs per agent (for confidence intervals)
 
-    elif taskName == "model_bAbI":
-        task_bAbI_variantParams = Task_bAbI_variantParams(challenge_type='single_supporting_fact_10k')
-        task_bAbI_variantParams = Task_bAbI_variantParams(challenge_type='two_supporting_facts_10k')
-        task_params = Task_Parameters(taskName=taskName ,variantParams=task_bAbI_variantParams)
+    elif task_name == "model_bAbI":
+        task_params = TaskParameters(task_name=task_name, dataset="two_supporting_facts_10k")
         base_dataset = "bAbI"
         usualBatchSize = 32
         usualBatchSize_random = 8
@@ -53,5 +46,5 @@ def get_application_config(taskName):
 
     else:
         raise ValueError
-    al_parameters = AL_Parameters(annotationBudget=annotation_budget, startingSize=startingSize)
+    al_parameters = ALParameters(annotation_budget=annotation_budget, startingSize=startingSize)
     return task_params, base_dataset, usualBatchSize, usualBatchSize_random, al_parameters, n_jobs, noRepetitions

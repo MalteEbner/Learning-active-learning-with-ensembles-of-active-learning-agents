@@ -1,51 +1,54 @@
-from AL_agents.heuristics.al_agent_uncertainty_sampling import AL_agent_uncertainty_sampling
-from AL_agents.heuristics.al_agent_random_sampling import AL_agent_random_sampling
-from AL_agents.heuristics.al_agent_diversity_sampling import AL_agent_diversity_sampling
-from AL_agents.heuristics.al_agent_representative_sampling import AL_agent_representative_sampling
-from AL_agents.ensemble.al_agent_ensemble import AL_agent_Ensemble
+from typing import Dict
 
-class AL_Agent_Parameters():
-    def __init__(self, agentName: str = "Random",batchSize_annotation=1,
-                 batchSize_agent=1, beta_dict=None):
-        self.agentName = agentName
-        self.batchSize_annotation = batchSize_annotation
-        if batchSize_agent <= 0:
-            batchSize_agent = batchSize_annotation
-        self.batchSize_agent = batchSize_agent
-        if beta_dict:
+from AL_agents.heuristics.al_agent_uncertainty_sampling import ALAgentUncertaintySampling
+from AL_agents.heuristics.al_agent_random_sampling import ALAgentRandomSampling
+from AL_agents.heuristics.al_agent_diversity_sampling import ALAgentDiversitySampling
+from AL_agents.heuristics.al_agent_representative_sampling import ALAgentRepresentativeSampling
+from AL_agents.ensemble.al_agent_ensemble import ALAgentEnsemble
+
+
+class ALAgentParameters():
+    def __init__(self, agent_name: str = 'Random', batch_size_annotation: int = 1,
+                 batch_size_agent: int = -1, beta_dict: Dict = None):
+        self.agent_name = agent_name
+        self.batch_size_annotation = batch_size_annotation
+        if batch_size_agent <= 0:
+            batch_size_agent = batch_size_annotation
+        self.batch_size_agent = batch_size_agent
+        if beta_dict is not None:
             self.beta_dict = beta_dict
 
-    def createAgent(self):
-        if self.agentName == "Random":
-            agent = AL_agent_random_sampling(self)
-        elif self.agentName == "Uncertainty":
-            agent = AL_agent_uncertainty_sampling(self)
-        elif self.agentName == "Diversity":
-            self.batchSize_agent = 1
-            agent = AL_agent_diversity_sampling(self)
-        elif self.agentName == "Representative":
-            agent = AL_agent_representative_sampling(self)
-        elif self.agentName == "Ensemble":
-            self.batchSize_agent = 1
-            agent = AL_agent_Ensemble(self)
+    def create_agent(self):
+        if self.agent_name == 'Random':
+            agent = ALAgentRandomSampling(self)
+        elif self.agent_name == 'Uncertainty':
+            agent = ALAgentUncertaintySampling(self)
+        elif self.agent_name == 'Diversity':
+            self.batch_size_agent = 1
+            agent = ALAgentDiversitySampling(self)
+        elif self.agent_name == 'Representative':
+            agent = ALAgentRepresentativeSampling(self)
+        elif self.agent_name == 'Ensemble':
+            self.batch_size_agent = 1
+            agent = ALAgentEnsemble(self)
         else:
-            print(f"ERROR: agentName unknown: {self.agentName}")
+            print(f'ERROR: agentName unknown: {self.agent_name}')
             raise ValueError
 
         return agent
 
-    def _getRelevantAttributeDict(self):
+    def _get_relevant_attribute_dict(self):
         attributes = self.__dict__.copy()
         return attributes
 
     def __repr__(self):
-        return str(self._getRelevantAttributeDict())
+        return str(self._get_relevant_attribute_dict())
 
-    def __shortRepr__(self):
-        agentName =  str(self.agentName)
-        if agentName not in ["Random","Diversity","Representative"]:
-            if self.batchSize_annotation > 1:
-                agentName += "_" + str(self.batchSize_annotation)
+    def __short_repr__(self):
+        agent_name = str(self.agent_name)
+        if agent_name not in ['Random', 'Diversity', 'Representative']:
+            if self.batch_size_annotation > 1:
+                agent_name += '_' + str(self.batch_size_annotation)
             else:
-                agentName += "_sequential"
-        return agentName
+                agent_name += '_sequential'
+        return agent_name

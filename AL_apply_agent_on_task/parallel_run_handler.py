@@ -87,7 +87,7 @@ class ParallelRunHandler:
                           f'of {total_tasks} tasks at time {time.time() - start}')
 
                 if self.save_results:
-                    self.fileHandler.writeApplicationHandlersToFile(application_handlers)
+                    self.fileHandler.write_application_handlers_to_file(application_handlers)
 
         else:
             application_handlers = [ApplicationHandler(task_params, al_params, agent_params, verbose=False)
@@ -100,7 +100,7 @@ class ParallelRunHandler:
                 print(f'finished {len(finished_application_handlers)} '
                       f'of {len(agent_params_list)} tasks at time {time.time() - start}')
             if self.save_results:
-                self.fileHandler.writeApplicationHandlersToFile(finished_application_handlers)
+                self.fileHandler.write_application_handlers_to_file(finished_application_handlers)
 
         if self.save_results:
             return finished_application_handlers, self.filename

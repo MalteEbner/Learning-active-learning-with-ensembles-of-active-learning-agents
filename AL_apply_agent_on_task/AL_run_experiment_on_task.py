@@ -1,4 +1,4 @@
-from AL_agents.al_agent_parameters import AL_Agent_Parameters
+from AL_agents.al_agent_parameters import ALAgentParameters
 from AL_apply_agent_on_task.application_handler_file_handler import ApplicationHandlerFileHandlerJSON
 from AL_apply_agent_on_task.application_config import get_application_config
 from AL_apply_agent_on_task.parallel_run_handler import ParallelRunHandler
@@ -13,24 +13,25 @@ delete_old_ensemble_data = False
  al_params, n_jobs, noRepetitions) = get_application_config(taskName)
 
 # define agents to apply on task
-agent_param_list = []
-# agentParams.append(AL_Agent_Parameters(agentName="Uncertainty", batchSize_annotation=1))
-agent_param_list.append(AL_Agent_Parameters(agentName="Random", batchSize_annotation=usualBatchSize))
-agent_param_list.append(AL_Agent_Parameters(agentName="Diversity", batchSize_annotation=usualBatchSize))
-agent_param_list.append(AL_Agent_Parameters(agentName="Uncertainty", batchSize_annotation=usualBatchSize))
-agent_param_list.append(AL_Agent_Parameters(agentName="Representative", batchSize_annotation=usualBatchSize))
+agent_param_list = list()
+# agentParams.append(AL_Agent_Parameters(agentName="Uncertainty", batch_size_annotation=1))
+agent_param_list.append(ALAgentParameters(agent_name="Random", batch_size_annotation=usualBatchSize))
+agent_param_list.append(ALAgentParameters(agent_name="Diversity", batch_size_annotation=usualBatchSize))
+agent_param_list.append(ALAgentParameters(agent_name="Uncertainty", batch_size_annotation=usualBatchSize))
+agent_param_list.append(ALAgentParameters(agent_name="Representative", batch_size_annotation=usualBatchSize))
 beta_dict = BetaDictHandler(taskName).beta_dict
-agent_param_list.append(AL_Agent_Parameters(agentName="Ensemble", batchSize_annotation=usualBatchSize, beta_dict=beta_dict))
+agent_param_list.append(ALAgentParameters(agent_name="Ensemble", batch_size_annotation=usualBatchSize,
+                                          beta_dict=beta_dict))
 if False:
     agentParams = agentParams[-1:]  # only rerun the ensemble
 agent_param_list *= noRepetitions
 
 task_param_list = [task_param] * len(agent_param_list)
 
-with ParallelRunHandler(task_param_list[0].getExperimentFilename(), n_jobs=n_jobs, test=test, save_results=True,
+with ParallelRunHandler(task_param_list[0].get_experiment_filename(), n_jobs=n_jobs, test=test, save_results=True,
                         parallelization=True) as parallel_run_handler:
     finished_application_handlers, filename = parallel_run_handler.al_apply_agents_on_task(
         task_param_list, al_params, agent_param_list,
     )
 
-ApplicationHandlerFileHandlerJSON(filename).plotAllContentWithConfidenceIntervals()
+ApplicationHandlerFileHandlerJSON(filename).plot_all_content_with_confidence_intervals()
