@@ -61,15 +61,17 @@ class ApplicationHandlerFileHandlerJSON:
             data_string = jsonpickle.encode(application_handlers, f)
             f.write(data_string)
 
-    def plot_all_content_with_confidence_intervals(self, metric='accuracy', withTitle: bool = True,
-                                                   agent_names: List[str] = []):
+    def plot_all_content_with_confidence_intervals(self, metric='accuracy',
+                                                   withTitle: bool = True,
+                                                   agent_names: List[str] = [],
+                                                   plot_really: bool = True):
         # define plots and legends
         run_representations = []
         application_handlers = self.read_application_handlers_from_file()
         for application_handler in application_handlers:
             concatted_infos = application_handler.concat_infos()
             run_representations += [(application_handler.al_agent_params.__short_repr__(),
-                                    concatted_infos["no_labelled_samples"], concatted_infos[metric])]
+                                     concatted_infos["no_labelled_samples"], concatted_infos[metric])]
 
         full_agent_names = list(set(representation[0] for representation in run_representations))
         if len(agent_names) == 0:
@@ -100,7 +102,7 @@ class ApplicationHandlerFileHandlerJSON:
             max_no_samples = max(len(arr) for arr in no_labelled_samples_list)
             no_labelled_samples = next((x for x in no_labelled_samples_list if len(x) == max_no_samples), 0)
             accuracy_tensor = np.stack([runRepr[2] for runRepr in run_representations if
-                                       runRepr[0] == agent_name and len(runRepr[1]) == max_no_samples], axis=1)
+                                        runRepr[0] == agent_name and len(runRepr[1]) == max_no_samples], axis=1)
             means, lower_bound, upper_bound, lower_bound_std, upper_bound_std = mean_confidence_std(accuracy_tensor)
 
             plt.fill_between(no_labelled_samples, lower_bound, upper_bound, color=color_cycle[i], alpha=.5)
@@ -131,4 +133,5 @@ class ApplicationHandlerFileHandlerJSON:
             filename = filename.replace(":", "_")
             plt.savefig(filename, figsize=(6, 4), dpi=320)
 
-        plt.show()
+        if plot_really:
+            plt.show()
