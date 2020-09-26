@@ -39,6 +39,7 @@ class ALAgentEnsemble(ALAgent):
         self.beta_dict = dict()
         self.beta_dict["Uncertainty"] = 1
         self.beta_dict["Diversity"] = 1
+        self.beta_dict["Uncertainty_Diversity"] = 1
         self.beta_dict["Representative"] = 1
 
     def define_agents_dict(self):

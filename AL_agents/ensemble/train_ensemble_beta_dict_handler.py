@@ -7,15 +7,15 @@ class BetaDictHandler:
 
         if task_name is not None:
             if task_name == "model_checkerboard":
-                self._define_beta_dict(1.04, 0.88, 0.8)
+                self._define_beta_dict(26455859, 93, 4309426, 6529)
             elif task_name == "model_UCI":
-                self._define_beta_dict(3.97, 0.81, 0.62)
+                self._define_beta_dict(1.411, 2.362, 5.140, 0.342)
             elif task_name == "model_Vision":
-                self._define_beta_dict(1, 1, 1)
+                self._define_beta_dict()
             else:
                 raise ValueError
         else:
-            self._define_beta_dict(1, 1, 1)
+            self._define_beta_dict()
 
     def get_hyperopt_space(self, standard_deviation_factor=4):
         space = dict()
@@ -27,8 +27,9 @@ class BetaDictHandler:
             space[key] = hp.hp.lognormal(key, mu, sigma)
         return space
 
-    def _define_beta_dict(self, beta_uncertainty, beta_diversity, beta_representative):
+    def _define_beta_dict(self, beta_uncertainty=1, beta_diversity=1, beta_uncertainty_diversity=1, beta_representative=1):
         self.beta_dict = dict()
         self.beta_dict["Uncertainty"] = beta_uncertainty
         self.beta_dict["Diversity"] = beta_diversity
+        self.beta_dict["Uncertainty_Diversity"] = beta_uncertainty_diversity
         self.beta_dict["Representative"] = beta_representative

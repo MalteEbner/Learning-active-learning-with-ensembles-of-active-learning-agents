@@ -1,5 +1,6 @@
 from typing import Dict
 
+from AL_agents.heuristics.al_agent_uncertainty_diversity_sampling import ALAgentUncertaintyDiversitySampling
 from AL_agents.heuristics.al_agent_uncertainty_sampling import ALAgentUncertaintySampling
 from AL_agents.heuristics.al_agent_random_sampling import ALAgentRandomSampling
 from AL_agents.heuristics.al_agent_diversity_sampling import ALAgentDiversitySampling
@@ -26,6 +27,9 @@ class ALAgentParameters():
         elif self.agent_name == 'Diversity':
             self.batch_size_agent = 1
             agent = ALAgentDiversitySampling(self)
+        elif self.agent_name == 'Uncertainty_Diversity':
+            self.batch_size_agent = 1
+            agent = ALAgentUncertaintyDiversitySampling(self)
         elif self.agent_name == 'Representative':
             agent = ALAgentRepresentativeSampling(self)
         elif self.agent_name == 'Ensemble':

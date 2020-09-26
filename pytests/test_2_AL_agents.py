@@ -33,7 +33,7 @@ def _apply_single_heuristic(agent_parameters: ALAgentParameters):
 
 def _get_test_parameters():
     test_cases = []
-    for agent_name in ["Random", "Uncertainty", "Diversity", "Representative", "Ensemble"]:
+    for agent_name in ["Random", "Uncertainty", "Diversity", "Uncertainty_Diversity", "Representative", "Ensemble"]:
         for batch_size_annotation in [1, 8]:
             for batch_size_agent in [1, 3, -1]:
                 name = f'{agent_name}_{batch_size_annotation}_{batch_size_agent}'

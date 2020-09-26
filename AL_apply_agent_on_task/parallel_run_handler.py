@@ -53,7 +53,7 @@ class ParallelRunHandler:
         random.seed(rng_seed)
         numpy.random.seed(rng_seed)
         application_handler = ApplicationHandler(task_params, _al_params, agent_params, verbose=False)
-        application_handler.run_episode(saveFullData=False)
+        application_handler.run_episode()
         return application_handler
 
     def al_apply_agents_on_task(self, task_param_list, al_params, agent_params_list) -> List[ApplicationHandler]:
@@ -95,7 +95,7 @@ class ParallelRunHandler:
                                     in zip(task_param_list, agent_params_list)]
             finished_application_handlers = []
             for i, applicationHandler in enumerate(application_handlers):
-                applicationHandler.run_episode(saveFullData=False)
+                applicationHandler.run_episode()
                 finished_application_handlers += [applicationHandler]
                 print(f'finished {len(finished_application_handlers)} '
                       f'of {len(agent_params_list)} tasks at time {time.time() - start}')
