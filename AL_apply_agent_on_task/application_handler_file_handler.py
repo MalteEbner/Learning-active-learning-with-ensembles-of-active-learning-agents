@@ -1,5 +1,7 @@
 from typing import List, Tuple
 from textwrap import wrap
+from pathlib import Path
+import os
 
 import jsonpickle
 import matplotlib.pyplot as plt
@@ -30,6 +32,8 @@ class ApplicationHandlerFileHandlerJSON:
             datastore = application_handler_list
 
         # Writing JSON data
+        dirname = os.path.dirname(os.path.abspath(self.filename))
+        Path(dirname).mkdir(parents=True, exist_ok=True)
         with open(self.filename, 'w+') as f:
             f.write(jsonpickle.encode(datastore, ))
 
