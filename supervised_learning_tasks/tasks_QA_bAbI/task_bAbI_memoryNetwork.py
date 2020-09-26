@@ -38,11 +38,11 @@ class TaskBabiMemoryNetwork(TaskKeras):
             queries_train = np.concatenate([self.queries_train[i, None] for i in sample_IDs])
             return [inputs_train, queries_train]
 
-    def get_y_train(self, sampleIDs: List[int] = "all") -> np.ndarray:
-        if sampleIDs == "all":
+    def get_y_train(self, sample_IDs: List[int] = "all") -> np.ndarray:
+        if sample_IDs == "all":
             return self.answers_train
         else:
-            return np.concatenate([self.answers_train[i, None] for i in sampleIDs])
+            return np.concatenate([self.answers_train[i, None] for i in sample_IDs])
 
     def get_x_test(self) -> List[np.ndarray]:
         return [self.inputs_test, self.queries_test]
@@ -144,7 +144,7 @@ class TaskBabiMemoryNetwork(TaskKeras):
 
         return model
 
-    def model_fit(self, x_train, y_train, batch_size=2, epochs=32, verbose=False, withAugmentation=False):
+    def model_fit(self, x_train, y_train, batch_size=2, epochs=32, verbose=False, with_augmentation=False):
 
         return self.model.fit(x_train, y_train,
                               batch_size=batch_size,

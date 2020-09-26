@@ -19,27 +19,23 @@ class TaskKeras(TaskSupervised):
     def reset_model(self):
         self.model.set_weights(self.initial_weights)
 
-    def get_x_train(self, sampleIDs: List[int] = "all") -> np.ndarray:
+    def get_x_train(self, sample_IDs: List[int] = "all") -> np.ndarray:
         if hasattr(self, "x_train"):
-            if sampleIDs == "all":
+            if sample_IDs == "all":
                 return self.x_train
             else:
-                return np.concatenate([self.x_train[i, None] for i in sampleIDs])
+                return np.concatenate([self.x_train[i, None] for i in sample_IDs])
         else:
             raise NotImplementedError
 
-    def get_y_train(self, sampleIDs: List[int] = "all") -> np.ndarray:
+    def get_y_train(self, sample_IDs: List[int] = "all") -> np.ndarray:
         if hasattr(self, "y_train"):
-            if sampleIDs == "all":
+            if sample_IDs == "all":
                 return self.y_train
             else:
-                return np.concatenate([self.y_train[i, None] for i in sampleIDs])
+                return np.concatenate([self.y_train[i, None] for i in sample_IDs])
         else:
             raise NotImplementedError
-
-    def getLabels(self, sampleIDs: List[int]) -> np.ndarray:
-        labels = self.get_y_train(sampleIDs)
-        return labels
 
     def get_x_test(self) -> np.ndarray:
         if hasattr(self, "x_test"):
@@ -54,7 +50,7 @@ class TaskKeras(TaskSupervised):
             raise NotImplementedError
 
     def get_predictions(self, sample_IDs: List[int]) -> np.ndarray:
-        x_train = self.get_x_train(sampleIDs=sample_IDs)
+        x_train = self.get_x_train(sample_IDs=sample_IDs)
         predictions = self.model.predict(x_train)
         return predictions
 
@@ -69,10 +65,10 @@ class TaskKeras(TaskSupervised):
 
         # train
         if batch_size == 0:
-            res = self.model_fit(x_train, y_train, epochs=int(epochs), verbose=verbose, withAugmentation=True)
+            res = self.model_fit(x_train, y_train, epochs=int(epochs), verbose=verbose, with_augmentation=True)
         else:
             res = self.model_fit(x_train, y_train, epochs=int(epochs), batch_size=batch_size, verbose=verbose,
-                                 withAugmentation=True)
+                                 with_augmentation=True)
 
         loss, acc = self.model.evaluate(x_test, y_test, batch_size=4096, verbose=0)
 
@@ -81,10 +77,10 @@ class TaskKeras(TaskSupervised):
     def define_model(self) -> Model:
         raise NotImplementedError
 
-    def get_dataset(self, verboseInit=False):
+    def get_dataset(self, verbose_init=False):
         raise NotImplementedError
 
-    def model_fit(self, x_train, y_train, epochs, batch_size, verbose, withAugmentation):
+    def model_fit(self, x_train, y_train, epochs, batch_size, verbose, with_augmentation):
         raise NotImplementedError
 
     def get_no_epochs(self) -> int:

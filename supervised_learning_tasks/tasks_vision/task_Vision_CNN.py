@@ -33,10 +33,10 @@ class TaskVisionCNN(TaskKeras):
     def get_loss_function(self):
         return losses.CategoricalCrossentropy
 
-    def model_fit(self, x_train, y_train, epochs, verbose, batch_size=16, withAugmentation=True):
+    def model_fit(self, x_train, y_train, epochs, verbose, batch_size=16, with_augmentation=True):
         batch_size = min(len(x_train), batch_size)
 
-        if withAugmentation:
+        if with_augmentation:
             # print('Using real-time data augmentation.')
             # This will do preprocessing and realtime data augmentation:
             datagen = ImageDataGenerator(
