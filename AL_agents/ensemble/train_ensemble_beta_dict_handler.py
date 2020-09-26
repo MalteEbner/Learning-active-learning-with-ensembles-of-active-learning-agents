@@ -17,7 +17,7 @@ class BetaDictHandler:
         else:
             self._define_beta_dict()
 
-    def get_hyperopt_space(self, standard_deviation_factor=4):
+    def get_hyperopt_space(self, standard_deviation_factor=2):
         space = dict()
         for key, value in self.beta_dict.items():
             desired_mu = value + 0.001  # for computational stability
