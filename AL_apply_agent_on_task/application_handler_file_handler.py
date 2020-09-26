@@ -1,4 +1,5 @@
 from typing import List, Tuple
+from textwrap import wrap
 
 import jsonpickle
 import matplotlib.pyplot as plt
@@ -93,7 +94,7 @@ class ApplicationHandlerFileHandlerJSON:
         for i, agent_name in enumerate(agent_names):
             no_labelled_samples_list = [runRepr[1] for runRepr in run_representations if runRepr[0] == agent_name]
             max_no_samples = max(len(arr) for arr in no_labelled_samples_list)
-            no_labelled_samples = next(x for x in no_labelled_samples_list if len(x) == max_no_samples)
+            no_labelled_samples = next((x for x in no_labelled_samples_list if len(x) == max_no_samples), 0)
             accuracy_tensor = np.stack([runRepr[2] for runRepr in run_representations if
                                        runRepr[0] == agent_name and len(runRepr[1]) == max_no_samples], axis=1)
             means, lower_bound, upper_bound, lower_bound_std, upper_bound_std = mean_confidence_std(accuracy_tensor)
@@ -110,7 +111,6 @@ class ApplicationHandlerFileHandlerJSON:
 
         title = "Task: " + application_handlers[-1].task_params.__short_repr__()
         # title += "\nEnv: " + str(application_handlers[-1].al_Parameters)
-        from textwrap import wrap
         title = "\n".join(wrap(title, 60))
         plt.xlabel('number of Samples')
         plt.ylabel(metric)

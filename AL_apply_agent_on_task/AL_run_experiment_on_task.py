@@ -23,7 +23,7 @@ beta_dict = BetaDictHandler(taskName).beta_dict
 agent_param_list.append(ALAgentParameters(agent_name="Ensemble", batch_size_annotation=usualBatchSize,
                                           beta_dict=beta_dict))
 if False:
-    agentParams = agentParams[-1:]  # only rerun the ensemble
+    agent_param_list = agent_param_list[-1:]  # only rerun the ensemble
 agent_param_list *= noRepetitions
 
 task_param_list = [task_param] * len(agent_param_list)

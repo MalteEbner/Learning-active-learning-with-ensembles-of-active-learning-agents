@@ -50,3 +50,6 @@ class TaskParameters:
         conditions.append(self.task_name == other.task_name)
         conditions.append(self.dataset == other.dataset)
         return all(conditions)
+
+    def __ne__(self, other):
+        return not self == other

@@ -33,3 +33,6 @@ class ALParameters():
         isEqual = self._get_relevant_attribute_dict(ignore_batch_size) == \
                   other._get_relevant_attribute_dict(ignore_batch_size)
         return isEqual
+
+    def __ne__(self, other):
+        return not self == other
