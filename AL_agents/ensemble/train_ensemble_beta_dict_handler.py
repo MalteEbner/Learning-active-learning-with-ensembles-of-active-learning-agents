@@ -7,9 +7,9 @@ class BetaDictHandler:
 
         if task_name is not None:
             if task_name == "model_checkerboard":
-                self._define_beta_dict(26455859, 93, 4309426, 6529)
+                self._define_beta_dict(0.93, 1.91, 1.62, 0)
             elif task_name == "model_UCI":
-                self._define_beta_dict(1.411, 2.362, 5.140, 0.342)
+                self._define_beta_dict(7.31, 0.12, 0.04, 0.4)
             elif task_name == "model_Vision":
                 self._define_beta_dict()
             else:
