@@ -4,13 +4,13 @@ from AL_apply_agent_on_task.application_config import get_application_config
 from AL_apply_agent_on_task.parallel_run_handler import ParallelRunHandler
 from AL_agents.ensemble.train_ensemble_beta_dict_handler import BetaDictHandler
 
-taskName = ["model_UCI", "model_checkerboard", "model_Vision", "model_bAbI"][0]
+task_name = ["model_UCI", "model_checkerboard", "model_Vision", "model_bAbI"][0]
 test = False
 delete_old_ensemble_data = False
 
 # define task
-(task_param, base_dataset, usual_batch_size, _,
- al_params, n_jobs, no_repetitions) = get_application_config(taskName)
+(task_param, base_dataset, usual_batch_size,
+ al_params, n_jobs, no_repetitions) = get_application_config(task_name)
 
 # define agents to apply on task
 agent_param_list = list()
@@ -20,10 +20,10 @@ agent_param_list.append(ALAgentParameters(agent_name="Uncertainty", batch_size_a
 agent_param_list.append(ALAgentParameters(agent_name="Diversity", batch_size_annotation=usual_batch_size))
 agent_param_list.append(ALAgentParameters(agent_name="Uncertainty_Diversity", batch_size_annotation=usual_batch_size))
 agent_param_list.append(ALAgentParameters(agent_name="Representative", batch_size_annotation=usual_batch_size))
-beta_dict = BetaDictHandler(taskName).beta_dict
+beta_dict = BetaDictHandler(task_name).beta_dict
 agent_param_list.append(ALAgentParameters(agent_name="Ensemble", batch_size_annotation=usual_batch_size,
                                           beta_dict=beta_dict))
-if True:
+if False:
     agent_param_list = agent_param_list[-1:]  # only rerun the ensemble
 agent_param_list *= no_repetitions
 
