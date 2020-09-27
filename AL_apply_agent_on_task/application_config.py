@@ -7,44 +7,44 @@ def get_application_config(task_name):
         variant_params = ['0-adult', '1-australian', '10-spam'][2]
         task_params = TaskParameters(task_name=task_name, dataset=variant_params)
         base_dataset = "UCI"
-        usualBatchSize = 4
-        usualBatchSize_random = 4
-        startingSize = 8
+        usual_batch_size = 4
+        usual_batch_size_random = 4
+        starting_size = 8
         annotation_budget = 40
         n_jobs = 104  # number of cores to use in parallel
-        noRepetitions = 104  # number of runs per agent (for confidence intervals)
+        no_repetitions = 104  # number of runs per agent (for confidence intervals)
 
     elif task_name == "model_checkerboard":
         task_params = TaskParameters(task_name=task_name, dateset="4x4")
         base_dataset = "checkerboard"
-        usualBatchSize = 32
-        usualBatchSize_random = 32
-        startingSize = 8
+        usual_batch_size = 32
+        usual_batch_size_random = 32
+        starting_size = 8
         annotation_budget = 200
         n_jobs = 8  # number of cores to use in parallel
-        noRepetitions = 32  # number of runs per agent (for confidence intervals)
+        no_repetitions = 32  # number of runs per agent (for confidence intervals)
 
     elif task_name == "model_Vision":
         task_params = TaskParameters(task_name="model_Vision", dataset="MNIST")
         base_dataset = "CIFAR10"
-        usualBatchSize = 32
-        usualBatchSize_random = 8
-        startingSize = 40
+        usual_batch_size = 32
+        usual_batch_size_random = 8
+        starting_size = 40
         annotation_budget = 360
         n_jobs = 26  # number of cores to use in parallel
-        noRepetitions = 104  # number of runs per agent (for confidence intervals)
+        no_repetitions = 104  # number of runs per agent (for confidence intervals)
 
     elif task_name == "model_bAbI":
         task_params = TaskParameters(task_name=task_name, dataset="two_supporting_facts_10k")
         base_dataset = "bAbI"
-        usualBatchSize = 32
-        usualBatchSize_random = 8
-        startingSize = 40
+        usual_batch_size = 32
+        usual_batch_size_random = 8
+        starting_size = 40
         annotation_budget = 360
         n_jobs = 52  # number of cores to use in parallel
-        noRepetitions = 52  # number of runs per agent (for confidence intervals)
+        no_repetitions = 52  # number of runs per agent (for confidence intervals)
 
     else:
         raise ValueError
-    al_parameters = ALParameters(annotation_budget=annotation_budget, starting_size=startingSize)
-    return task_params, base_dataset, usualBatchSize, usualBatchSize_random, al_parameters, n_jobs, noRepetitions
+    al_parameters = ALParameters(annotation_budget=annotation_budget, starting_size=starting_size)
+    return task_params, base_dataset, usual_batch_size, usual_batch_size_random, al_parameters, n_jobs, no_repetitions
