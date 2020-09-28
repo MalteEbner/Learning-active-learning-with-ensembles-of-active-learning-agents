@@ -3,6 +3,9 @@ import random
 from typing import List
 
 import ray
+import lightgbm  # needed by hyperopt
+import sklearn  # needed by hyperopt
+import tqdm  # needed by hyperopt
 import numpy.random
 
 from AL_apply_agent_on_task.application_handler_file_handler import ApplicationHandlerFileHandlerJSON

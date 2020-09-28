@@ -1,20 +1,18 @@
 from typing import Dict
 
 import hyperopt as hp
-import lightgbm  # needed by hyperopt
-import sklearn  # needed by hyperopt
 
 from AL_agents.al_agent_parameters import ALAgentParameters
 from AL_agents.ensemble.train_ensemble_function import train_ensemble_with_hyperopt
 from AL_environment_MDP.al_parameters import ALParameters
 from supervised_learning_tasks.task_parameters import TaskParameters
 
-starting_size = 40
-annotation_budget = 72
-batch_size_annotation = 4
+starting_size = 8
+annotation_budget = 32
+batch_size_annotation = 8
 
 n_jobs = 4
-runs_per_objective_function = 4
+runs_per_objective_function = 64
 
 max_evals = 100
 
@@ -23,7 +21,7 @@ algo = [hp.atpe.suggest, hp.tpe.suggest, hp.rand.suggest][0]
 '''
 Parameters for monte carlo simulation
 '''
-training_task = ['UCI', 'checkerboard', 'MNIST', 'bAbI'][2]
+training_task = ['UCI', 'checkerboard', 'MNIST', 'bAbI'][0]
 task_param_list = []
 if training_task == 'UCI':
     uci_datasets = ['2-breast_cancer', '3-diabetis', '4-flare_solar',
