@@ -30,7 +30,7 @@ class TaskParameters:
 
     def get_experiment_filename(self):
         filename = 'Experiments/results/'
-        filename += self.__repr__()
+        filename += self.__short_repr__()
         filename += '_experiments'
         return filename
 
