@@ -32,7 +32,7 @@ def get_application_config(task_name):
         no_repetitions = 104  # number of runs per agent (for confidence intervals)
 
     elif task_name == "model_bAbI":
-        task_params = TaskParameters(task_name=task_name, dataset="two_supporting_facts_10k")
+        task_params = TaskParameters(task_name=task_name, dataset="two_supporting_facts")
         base_dataset = "bAbI"
         usual_batch_size = 64
         starting_size = 40

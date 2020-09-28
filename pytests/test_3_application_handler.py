@@ -4,6 +4,7 @@ from AL_apply_agent_on_task.application_config import get_application_config
 from AL_agents.al_agent_parameters import ALAgentParameters
 from AL_apply_agent_on_task.application_handler_file_handler import ApplicationHandlerFileHandlerJSON
 from AL_apply_agent_on_task.application_handler import ApplicationHandler
+from AL_apply_agent_on_task.parallel_run_handler import ParallelRunHandler
 from AL_environment_MDP.al_parameters import ALParameters
 from supervised_learning_tasks.task_parameters import TaskParameters
 
@@ -29,12 +30,12 @@ def _test_application_handler(task_name):
     # run the experiment
     with ParallelRunHandler(task_param_list[0].get_experiment_filename(), n_jobs=1, test=True, save_results=False,
                             parallelization=False) as parallel_run_handler:
-        finished_application_handlers, filename = parallel_run_handler.al_apply_agents_on_task(
+        finished_application_handlers = parallel_run_handler.al_apply_agents_on_task(
             task_param_list, al_params, agent_param_list,
         )
 
     # save the results
-    file_handler.write_application_handlers_to_file([application_handler])
+    file_handler.write_application_handlers_to_file(finished_application_handlers)
 
     # plot the results
     ApplicationHandlerFileHandlerJSON(filename).plot_all_content_with_confidence_intervals(plot_really=False)
