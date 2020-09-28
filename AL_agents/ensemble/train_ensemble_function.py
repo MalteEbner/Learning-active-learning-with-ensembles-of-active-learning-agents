@@ -44,6 +44,8 @@ def train_ensemble_with_hyperopt(
 
         best_beta = hp.fmin(objective_function, search_space, algo=algo, max_evals=max_evals, verbose=verbose)
         print(f"best beta: {best_beta}")
+        print(f"best beta: {best_beta['Uncertainty']}, {best_beta['Diversity']}, "
+              f"{best_beta['Representative']}, {best_beta['Uncertainty_Diversity']}")
 
     return best_beta
 
