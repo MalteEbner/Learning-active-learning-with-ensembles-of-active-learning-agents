@@ -27,7 +27,10 @@ class BetaDictHandler:
             space[key] = hp.hp.lognormal(key, mu, sigma)
         return space
 
-    def _define_beta_dict(self, beta_uncertainty=1, beta_diversity=1, beta_uncertainty_diversity=1, beta_representative=1):
+    def _define_beta_dict(self, beta_uncertainty: float=1,
+                          beta_diversity: float=1,
+                          beta_uncertainty_diversity: float=1,
+                          beta_representative: float=1):
         self.beta_dict = dict()
         self.beta_dict["Uncertainty"] = beta_uncertainty
         self.beta_dict["Diversity"] = beta_diversity
