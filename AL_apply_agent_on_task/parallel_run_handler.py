@@ -14,13 +14,14 @@ from AL_apply_agent_on_task.application_handler import ApplicationHandler
 
 class ParallelRunHandler:
     def __init__(self, experiment_filename: str, n_jobs: int, test: bool = False, save_results: bool = True,
-                 parallelization=True, verbose=True):
+                 parallelization=True, verbose=True, delete_old_ensemble_data: bool = False):
         self.experiment_filename = experiment_filename
         self.n_jobs = n_jobs
         self.test = test
         self.save_results = save_results
         self.verbose = verbose
         self.parallelization = parallelization
+        self.delete_old_ensemble_data = delete_old_ensemble_data
 
     def __enter__(self):
         if self.parallelization:
@@ -48,6 +49,10 @@ class ParallelRunHandler:
                 filename = experiment_filename
                 filename += '.json'
             file_handler = ApplicationHandlerFileHandlerJSON(filename)
+            if self.delete_old_ensemble_data:
+                def filter_function(application_handler, index):
+                    return application_handler.al_agent_params.agent_name == "Ensemble"
+                file_handler.delete_some_application_handlers(filter_function)
             self.fileHandler = file_handler
             self.filename = filename
 
