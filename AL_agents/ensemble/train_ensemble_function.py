@@ -1,15 +1,26 @@
-from typing import Dict
+from typing import Dict, List, Callable
 
 import hyperopt as hp
 import lightgbm  # needed by hyperopt
 import sklearn  # needed by hyperopt
 from scipy.stats import gmean
 
+from AL_agents.al_agent_parameters import ALAgentParameters
 from AL_agents.ensemble.train_ensemble_beta_dict_handler import BetaDictHandler
 from AL_apply_agent_on_task.parallel_run_handler import ParallelRunHandler
+from AL_environment_MDP.al_parameters import ALParameters
+from supervised_learning_tasks.task_parameters import TaskParameters
 
 
-def train_ensemble_with_hyperopt(algo, task_param_list, n_jobs, al_params, agent_param, max_evals):
+def train_ensemble_with_hyperopt(
+        algo: Callable,
+        task_param_list: List[TaskParameters],
+        n_jobs: int,
+        al_params: ALParameters,
+        agent_param: ALAgentParameters,
+        max_evals: int,
+        verbose: bool = True)\
+        -> dict:
     mean_type = "arithmetic"
     if len(task_param_list) > 1:
         mean_type = "geometric"
@@ -31,10 +42,10 @@ def train_ensemble_with_hyperopt(algo, task_param_list, n_jobs, al_params, agent
 
         example_beta = hp.pyll.stochastic.sample(search_space)
 
-        best_beta = hp.fmin(objective_function, search_space, algo=algo, max_evals=max_evals, verbose=True)
+        best_beta = hp.fmin(objective_function, search_space, algo=algo, max_evals=max_evals, verbose=verbose)
         print(f"best beta: {best_beta}")
 
-    debug_point = 0
+    return best_beta
 
 
 def get_mean_accuracy_of_agent(

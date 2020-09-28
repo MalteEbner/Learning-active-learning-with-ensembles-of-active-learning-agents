@@ -25,7 +25,8 @@ def _test_ensemble_training(task_name):
     al_params = ALParameters(annotation_budget=annotation_budget, starting_size=starting_size)
     agent_param = ALAgentParameters(agent_name="Ensemble", batch_size_annotation=batch_size_annotation)
 
-    train_ensemble_with_hyperopt(algo, task_param_list, n_jobs, al_params, agent_param, max_evals)
+    train_ensemble_with_hyperopt(algo, task_param_list, n_jobs, al_params,
+                                 agent_param, max_evals, verbose=False)
 
     print('blub')
 
