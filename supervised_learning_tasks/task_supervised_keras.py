@@ -19,26 +19,26 @@ class TaskKeras(TaskSupervised):
     def reset_model(self):
         self.model.set_weights(self.initial_weights)
 
-    def get_x_train(self, sampleIDs: List[int] = "all") -> np.ndarray:
+    def get_x_train(self, sample_IDs: List[int] = "all") -> np.ndarray:
         if hasattr(self, "x_train"):
-            if sampleIDs == "all":
+            if sample_IDs == "all":
                 return self.x_train
             else:
-                return np.concatenate([self.x_train[i, None] for i in sampleIDs])
+                return np.concatenate([self.x_train[i, None] for i in sample_IDs])
         else:
             raise NotImplementedError
 
-    def get_y_train(self, sampleIDs: List[int] = "all") -> np.ndarray:
+    def get_y_train(self, sample_IDs: List[int] = "all") -> np.ndarray:
         if hasattr(self, "y_train"):
-            if sampleIDs == "all":
+            if sample_IDs == "all":
                 return self.y_train
             else:
-                return np.concatenate([self.y_train[i, None] for i in sampleIDs])
+                return np.concatenate([self.y_train[i, None] for i in sample_IDs])
         else:
             raise NotImplementedError
 
-    def getLabels(self, sampleIDs: List[int]) -> np.ndarray:
-        labels = self.get_y_train(sampleIDs)
+    def getLabels(self, sample_IDs: List[int]) -> np.ndarray:
+        labels = self.get_y_train(sample_IDs)
         return labels
 
     def get_x_test(self) -> np.ndarray:
@@ -54,7 +54,7 @@ class TaskKeras(TaskSupervised):
             raise NotImplementedError
 
     def get_predictions(self, sample_IDs: List[int]) -> np.ndarray:
-        x_train = self.get_x_train(sampleIDs=sample_IDs)
+        x_train = self.get_x_train(sample_IDs=sample_IDs)
         predictions = self.model.predict(x_train)
         return predictions
 
