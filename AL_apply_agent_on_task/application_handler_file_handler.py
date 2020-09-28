@@ -1,4 +1,4 @@
-from typing import List, Tuple
+from typing import List, Tuple, Callable
 from textwrap import wrap
 from pathlib import Path
 import os
@@ -37,7 +37,7 @@ class ApplicationHandlerFileHandlerJSON:
         with open(self.filename, 'w+') as f:
             f.write(jsonpickle.encode(datastore, ))
 
-    def delete_some_application_handlers(self, filter_function):
+    def delete_some_application_handlers(self, filter_function: Callable[[ApplicationHandler, int], bool]):
         '''
         @param filter_function: if filterFunction(applicationHandler, index) returns True, applicationHandler is deleted
         @return: None
