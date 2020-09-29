@@ -55,10 +55,10 @@ class TaskKeras(TaskSupervised):
 
     def get_predictions(self, sample_IDs: List[int]) -> np.ndarray:
         x_train = self.get_x_train(sample_IDs=sample_IDs)
-        predictions = self.model.predict(x_train)
+        predictions = self.model.predict(x_train, batch_size=4096)
         return predictions
 
-    def train_on_batch(self, sample_IDs: List[int], verbose=False, batch_size=0) -> Tuple[float, float]:
+    def train_on_batch(self, sample_IDs: List[int], verbose=False, batch_size=32) -> Tuple[float, float]:
         epochs = self.get_no_epochs()
 
         # get subset to train on
@@ -68,10 +68,7 @@ class TaskKeras(TaskSupervised):
         y_test = self.get_y_test()
 
         # train
-        if batch_size == 0:
-            res = self.model_fit(x_train, y_train, epochs=int(epochs), verbose=verbose, withAugmentation=True)
-        else:
-            res = self.model_fit(x_train, y_train, epochs=int(epochs), batch_size=batch_size, verbose=verbose,
+        res = self.model_fit(x_train, y_train, epochs=int(epochs), batch_size=batch_size, verbose=verbose,
                                  withAugmentation=True)
 
         loss, acc = self.model.evaluate(x_test, y_test, batch_size=4096, verbose=0)
@@ -81,10 +78,10 @@ class TaskKeras(TaskSupervised):
     def define_model(self) -> Model:
         raise NotImplementedError
 
-    def get_dataset(self, verboseInit=False):
+    def get_dataset(self, verbose_init=False):
         raise NotImplementedError
 
-    def model_fit(self, x_train, y_train, epochs, batch_size, verbose, withAugmentation):
+    def model_fit(self, x_train, y_train, epochs, batch_size, verbose, with_augmentation):
         raise NotImplementedError
 
     def get_no_epochs(self) -> int:
