@@ -37,10 +37,6 @@ class TaskKeras(TaskSupervised):
         else:
             raise NotImplementedError
 
-    def getLabels(self, sample_IDs: List[int]) -> np.ndarray:
-        labels = self.get_y_train(sample_IDs)
-        return labels
-
     def get_x_test(self) -> np.ndarray:
         if hasattr(self, "x_test"):
             return self.x_test
