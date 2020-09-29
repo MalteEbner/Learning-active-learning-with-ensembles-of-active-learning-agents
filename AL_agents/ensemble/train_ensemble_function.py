@@ -19,7 +19,9 @@ def train_ensemble_with_hyperopt(
         al_params: ALParameters,
         agent_param: ALAgentParameters,
         max_evals: int,
-        verbose: bool = True)\
+        verbose: bool = True,
+        parallelization: bool = True
+)\
         -> dict:
     mean_type = "arithmetic"
     if len(task_param_list) > 1:
@@ -27,7 +29,7 @@ def train_ensemble_with_hyperopt(
 
     with ParallelRunHandler(task_param_list[0].get_experiment_filename(), n_jobs=n_jobs, test=False,
                             save_results=False,
-                            parallelization=True,
+                            parallelization=parallelization,
                             verbose=False) as parallel_run_handler:
         def objective_function(beta_dict: Dict):
             objective_to_maximize = get_mean_accuracy_of_agent(
