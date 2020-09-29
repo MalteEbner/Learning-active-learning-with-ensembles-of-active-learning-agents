@@ -11,7 +11,7 @@ class BetaDictHandler:
             elif task_name == "model_checkerboard":
                 self._define_beta_dict(0.93, 1.91, 0, 1.62)
             elif task_name == "model_Vision":
-                self._define_beta_dict()
+                self._define_beta_dict(0.5, 0.4, 1.8, 1.74)
             elif task_name == "model_bAbI":
                 self._define_beta_dict()
             else:
