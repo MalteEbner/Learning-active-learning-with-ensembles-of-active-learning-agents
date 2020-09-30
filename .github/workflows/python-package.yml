@@ -38,3 +38,10 @@ jobs:
       run: |
         export PYTHONPATH="${PYTHONPATH}:./"
         pytest
+    - name: Wemake Python Stylguide
+      uses: wemake-services/wemake-python-styleguide@0.13.4
+      continue-on-error: true
+      with:
+        reporter: 'github-pr-review'
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
