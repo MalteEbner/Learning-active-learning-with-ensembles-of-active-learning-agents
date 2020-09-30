@@ -131,7 +131,7 @@ class ApplicationHandlerFileHandlerJSON:
             filename = filename.replace(".json", ".png")
             filename = filename.replace("\ ", " ")
             filename = filename.replace(":", "_")
-            plt.savefig(filename, figsize=(6, 4), dpi=320)
+            plt.savefig(filename, dpi=320)
 
         if plot_really:
             plt.show()
