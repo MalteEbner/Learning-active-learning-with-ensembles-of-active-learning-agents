@@ -4,7 +4,7 @@ from AL_apply_agent_on_task.application_config import get_application_config
 from AL_apply_agent_on_task.parallel_run_handler import ParallelRunHandler
 from AL_agents.ensemble.train_ensemble_beta_dict_handler import BetaDictHandler
 
-task_name = ["model_UCI", "model_checkerboard", "model_Vision", "model_bAbI"][2]
+task_name = ["model_UCI", "model_checkerboard", "model_Vision", "model_bAbI"][3]
 test = False
 delete_old_ensemble_data = False
 only_ensemble = False
@@ -31,7 +31,7 @@ agent_param_list *= no_repetitions
 task_param_list = [task_param] * len(agent_param_list)
 
 with ParallelRunHandler(task_param_list[0].get_experiment_filename(), n_jobs=n_jobs, test=test, save_results=True,
-                        parallelization=False, verbose=False, delete_old_ensemble_data= delete_old_ensemble_data) \
+                        parallelization=False, verbose=True, delete_old_ensemble_data= delete_old_ensemble_data) \
         as parallel_run_handler:
     finished_application_handlers, filename = parallel_run_handler.al_apply_agents_on_task(
         task_param_list, al_params, agent_param_list,
