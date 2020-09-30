@@ -23,13 +23,13 @@ def get_application_config(task_name):
         no_repetitions = 64  # number of runs per agent (for confidence intervals)
 
     elif task_name == "model_Vision":
-        task_params = TaskParameters(task_name="model_Vision", dataset="MNIST")
-        base_dataset = "CIFAR10"
+        task_params = TaskParameters(task_name="model_Vision", dataset="fashion")
+        base_dataset = "MNIST"
         usual_batch_size = 64
         starting_size = 40
         annotation_budget = 360
-        n_jobs = 26  # number of cores to use in parallel
-        no_repetitions = 104  # number of runs per agent (for confidence intervals)
+        n_jobs = 1  # number of cores to use in parallel
+        no_repetitions = 10  # number of runs per agent (for confidence intervals)
 
     elif task_name == "model_bAbI":
         task_params = TaskParameters(task_name=task_name, dataset="two_supporting_facts")
@@ -37,8 +37,8 @@ def get_application_config(task_name):
         usual_batch_size = 64
         starting_size = 40
         annotation_budget = 360
-        n_jobs = 52  # number of cores to use in parallel
-        no_repetitions = 52  # number of runs per agent (for confidence intervals)
+        n_jobs = 1  # number of cores to use in parallel
+        no_repetitions = 10  # number of runs per agent (for confidence intervals)
 
     else:
         raise ValueError
