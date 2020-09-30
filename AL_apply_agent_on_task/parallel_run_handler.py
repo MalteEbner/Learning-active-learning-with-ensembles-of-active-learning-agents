@@ -108,7 +108,7 @@ class ParallelRunHandler:
                 if self.verbose:
                     print(f'finished {i+1} '
                           f'of {len(agent_params_list)} tasks at time {time.time() - start}')
-                if i % 10 == 9 and self.save_results:
+                if i % 6 == 5 and self.save_results:
                     self.fileHandler.write_application_handlers_to_file(finished_application_handlers)
                     finished_application_handlers = []
 
