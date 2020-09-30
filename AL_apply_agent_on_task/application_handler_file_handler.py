@@ -62,7 +62,7 @@ class ApplicationHandlerFileHandlerJSON:
             f.write(data_string)
 
     def plot_all_content_with_confidence_intervals(self, metric='accuracy',
-                                                   withTitle: bool = True,
+                                                   with_title: bool = True,
                                                    agent_names: List[str] = [],
                                                    plot_really: bool = True):
         # define plots and legends
@@ -120,7 +120,7 @@ class ApplicationHandlerFileHandlerJSON:
         title = "\n".join(wrap(title, 60))
         plt.xlabel('number of Samples')
         plt.ylabel(metric)
-        if withTitle:
+        if with_title:
             plt.title(title, fontsize=10)
         plt.tight_layout()
         plt.grid()
