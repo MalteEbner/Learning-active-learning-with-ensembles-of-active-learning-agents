@@ -13,7 +13,7 @@ class BetaDictHandler:
             elif task_name == "model_Vision":
                 self._define_beta_dict(0.5, 0.4, 1.8, 1.74)
             elif task_name == "model_bAbI":
-                self._define_beta_dict()
+                self._define_beta_dict(0, 0, 6644, 21.5)
             else:
                 raise ValueError
         else:
