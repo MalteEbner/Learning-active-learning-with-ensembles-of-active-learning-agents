@@ -64,7 +64,8 @@ class ApplicationHandlerFileHandlerJSON:
     def plot_all_content_with_confidence_intervals(self, metric='accuracy',
                                                    with_title: bool = True,
                                                    agent_names: List[str] = [],
-                                                   plot_really: bool = True):
+                                                   plot_really: bool = True,
+                                                   filename_for_plot = None):
         # define plots and legends
         run_representations = []
         application_handlers = self.read_application_handlers_from_file()
@@ -115,7 +116,7 @@ class ApplicationHandlerFileHandlerJSON:
         '''
         plt.legend(legends)
 
-        title = "Task: " + application_handlers[-1].task_params.__short_repr__()
+        title = "Task: " + os.path.basename(self.filename).replace(" experiments.json","")
         # title += "\nEnv: " + str(application_handlers[-1].al_Parameters)
         title = "\n".join(wrap(title, 60))
         plt.xlabel('number of Samples')
@@ -127,11 +128,12 @@ class ApplicationHandlerFileHandlerJSON:
 
         save_figure = True
         if save_figure:
-            filename = self.filename
-            filename = filename.replace(".json", ".png")
-            filename = filename.replace("\ ", " ")
-            filename = filename.replace(":", "_")
-            plt.savefig(filename, dpi=320)
+            if filename_for_plot is None:
+                filename_for_plot = self.filename
+                filename_for_plot = filename_for_plot.replace(".json", ".png")
+                filename_for_plot = filename_for_plot.replace("\ ", " ")
+                filename_for_plot = filename_for_plot.replace(":", "_")
+            plt.savefig(filename_for_plot, dpi=320)
 
         if plot_really:
             plt.show()

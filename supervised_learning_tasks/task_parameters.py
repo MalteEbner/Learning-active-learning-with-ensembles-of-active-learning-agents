@@ -31,7 +31,7 @@ class TaskParameters:
     def get_experiment_filename(self):
         filename = 'Experiments/results/'
         filename += self.__short_repr__()
-        filename += '_experiments'
+        filename += ' experiments'
         return filename
 
     def __repr__(self):
@@ -39,11 +39,13 @@ class TaskParameters:
         return str([self_dict[key] for key in sorted(self_dict.keys(), reverse=False)])
 
     def __short_repr__(self):
-        representation = self.task_name
-        representation += f'_{self.dataset}'
-        representation = representation.replace('model_', '')
-        representation = representation.replace('_randomForest', '')
-        return representation
+        if 'Vision' in self.task_name:
+            name = self.dataset
+        else:
+            name = self.task_name + ' ' + self.dataset
+        name = name.replace('model_','')
+        name = name.replace('_',' ')
+        return name
 
     def __eq__(self, other):
         conditions = list()
