@@ -40,9 +40,9 @@ class TaskParameters:
 
     def __short_repr__(self):
         if 'Vision' in self.task_name:
-            name = self.dataset
+            name = f"{self.dataset}"
         else:
-            name = self.task_name + ' ' + self.dataset
+            name = f"{self.task_name} {self.dataset}"
         name = name.replace('model_','')
         name = name.replace('_',' ')
         return name
