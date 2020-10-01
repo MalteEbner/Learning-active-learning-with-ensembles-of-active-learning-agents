@@ -38,7 +38,7 @@ def get_application_config(task_name):
         starting_size = 40
         annotation_budget = 360
         n_jobs = 1  # number of cores to use in parallel
-        no_repetitions = 10  # number of runs per agent (for confidence intervals)
+        no_repetitions = 60  # number of runs per agent (for confidence intervals)
 
     else:
         raise ValueError
