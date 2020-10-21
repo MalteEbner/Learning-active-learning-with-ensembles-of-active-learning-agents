@@ -1,5 +1,3 @@
-# Paper_LAL_ensemble_code
-
 ## How to install:
 - ensure you have python 3.6, 3.7 or 3.8
 - install all packages defined in the requirements.txt file
