@@ -65,7 +65,7 @@ class ApplicationHandlerFileHandlerJSON:
                                                    with_title: bool = True,
                                                    agent_names: List[str] = [],
                                                    plot_really: bool = True,
-                                                   filename_for_plot = None):
+                                                   filename_for_plot=None):
         # define plots and legends
         run_representations = []
         application_handlers = self.read_application_handlers_from_file()
@@ -99,16 +99,28 @@ class ApplicationHandlerFileHandlerJSON:
 
         color_cycle = plt.rcParams['axes.prop_cycle'].by_key()['color']
         for i, agent_name in enumerate(agent_names):
-            no_labelled_samples_list = [runRepr[1] for runRepr in run_representations if runRepr[0] == agent_name]
-            max_no_samples = max(len(arr) for arr in no_labelled_samples_list)
-            no_labelled_samples = next((x for x in no_labelled_samples_list if len(x) == max_no_samples), 0)
-            accuracy_tensor = np.stack([runRepr[2] for runRepr in run_representations if
-                                        runRepr[0] == agent_name and len(runRepr[1]) == max_no_samples], axis=1)
-            means, lower_bound, upper_bound, lower_bound_std, upper_bound_std = mean_confidence_std(accuracy_tensor)
+            accuracies_list_dict = dict()
+            for run_repr in [x for x in run_representations if x[0] == agent_name]:
+                already_entered_no_labelled_samples = []
+                for accuracy, no_labelled_samples in zip(run_repr[2], run_repr[1]):
+                    if no_labelled_samples in already_entered_no_labelled_samples:
+                        break
+                    else:
+                        if no_labelled_samples not in accuracies_list_dict.keys():
+                            accuracies_list_dict[no_labelled_samples] = list()
+                        accuracies_list_dict[no_labelled_samples].append(accuracy)
+            bounds_list = list()
+            for no_labelled_samples, accuracies_list in sorted(accuracies_list_dict.items()):
+                accuracy_tensor = np.array(accuracies_list)[np.newaxis, :]
+                bounds = mean_confidence_std(accuracy_tensor)
+                bounds_list.append(bounds)
+            bounds_tuple_array = [np.vstack(x)[:, 0] for x in zip(*bounds_list)]
+            means, lower_bound, upper_bound, lower_bound_std, upper_bound_std = bounds_tuple_array
 
-            plt.fill_between(no_labelled_samples, lower_bound, upper_bound, color=color_cycle[i], alpha=.5)
-            plt.fill_between(no_labelled_samples, lower_bound_std, upper_bound_std, color=color_cycle[i], alpha=.1)
-            plt.plot(no_labelled_samples, means, color=color_cycle[i])
+            no_labelled_samples_list = sorted(accuracies_list_dict.keys())
+            plt.fill_between(no_labelled_samples_list, lower_bound, upper_bound, color=color_cycle[i], alpha=.5)
+            plt.fill_between(no_labelled_samples_list, lower_bound_std, upper_bound_std, color=color_cycle[i], alpha=.1)
+            plt.plot(no_labelled_samples_list, means, color=color_cycle[i])
             legends += [agent_name]
 
         '''
@@ -116,7 +128,7 @@ class ApplicationHandlerFileHandlerJSON:
         '''
         plt.legend(legends)
 
-        title = "Task: " + os.path.basename(self.filename).replace(" experiments.json","")
+        title = "Task: " + os.path.basename(self.filename).replace(" experiments.json", "")
         # title += "\nEnv: " + str(application_handlers[-1].al_Parameters)
         title = "\n".join(wrap(title, 60))
         plt.xlabel('number of Samples')
