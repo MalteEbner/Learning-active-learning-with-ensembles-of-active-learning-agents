@@ -103,12 +103,13 @@ class ParallelRunHandler:
                                     in zip(task_param_list, agent_params_list)]
             finished_application_handlers = []
             for i, applicationHandler in enumerate(application_handlers):
+                time_last_save = time.time()
                 applicationHandler.run_episode()
                 finished_application_handlers += [applicationHandler]
                 if self.verbose:
                     print(f'finished {i+1} '
                           f'of {len(agent_params_list)} tasks at time {time.time() - start}')
-                if i % 6 == 5 and self.save_results:
+                if self.save_results and time.time()-time_last_save > 60:
                     self.fileHandler.write_application_handlers_to_file(finished_application_handlers)
                     finished_application_handlers = []
 
