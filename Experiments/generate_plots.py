@@ -3,7 +3,7 @@ from os.path import isfile, join
 
 from AL_apply_agent_on_task.application_handler_file_handler import ApplicationHandlerFileHandlerJSON
 
-path = "./Experiments/results"
+path = "./Experiments/results_ICLR_with_ensemble_equal_weight"
 
 files = [join(path, f) for f in listdir(path) if isfile(join(path, f)) and f.endswith('.json')]
 for file in files:
