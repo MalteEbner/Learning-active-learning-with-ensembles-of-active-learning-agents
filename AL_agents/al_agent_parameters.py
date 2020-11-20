@@ -35,6 +35,9 @@ class ALAgentParameters():
         elif self.agent_name == 'Ensemble':
             self.batch_size_agent = 1
             agent = ALAgentEnsemble(self)
+        elif self.agent_name == 'Ensemble_Equal_Weight':
+            self.batch_size_agent = 1
+            agent = ALAgentEnsemble(self)
         else:
             print(f'ERROR: agentName unknown: {self.agent_name}')
             raise ValueError
