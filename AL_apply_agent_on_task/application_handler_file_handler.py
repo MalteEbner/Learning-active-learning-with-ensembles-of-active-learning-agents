@@ -18,8 +18,8 @@ class ApplicationHandlerFileHandlerJSON:
     def read_application_handlers_from_file(self) -> List[ApplicationHandler]:
         # Read JSON data into the datastore variable
         with open(self.filename, 'r') as f:
-            dataString = f.read()
-            datastore = jsonpickle.decode(dataString)
+            data_string = f.read()
+            datastore = jsonpickle.decode(data_string)
         return datastore
 
     def write_application_handlers_to_file(self, application_handler_list: List[ApplicationHandler]):
@@ -97,7 +97,7 @@ class ApplicationHandlerFileHandlerJSON:
             deviation = stds * scipy.stats.t.ppf((1 + confidence) / 2., no_repetitions - 1) / (no_repetitions ** 0.5)
             return means, means - deviation, means + deviation, means - stds, means + stds
 
-        color_cycle = plt.rcParams['axes.prop_cycle'].by_key()['color']
+        color_cycle = plt.get_cmap("tab10")
         for i, agent_name in enumerate(agent_names):
             accuracies_list_dict = dict()
             for run_repr in [x for x in run_representations if x[0] == agent_name]:
@@ -118,9 +118,9 @@ class ApplicationHandlerFileHandlerJSON:
             means, lower_bound, upper_bound, lower_bound_std, upper_bound_std = bounds_tuple_array
 
             no_labelled_samples_list = sorted(accuracies_list_dict.keys())
-            plt.fill_between(no_labelled_samples_list, lower_bound, upper_bound, color=color_cycle[i], alpha=.5)
-            plt.fill_between(no_labelled_samples_list, lower_bound_std, upper_bound_std, color=color_cycle[i], alpha=.1)
-            plt.plot(no_labelled_samples_list, means, color=color_cycle[i])
+            plt.fill_between(no_labelled_samples_list, lower_bound, upper_bound, color=color_cycle(i), alpha=.5)
+            plt.fill_between(no_labelled_samples_list, lower_bound_std, upper_bound_std, color=color_cycle(i), alpha=.1)
+            plt.plot(no_labelled_samples_list, means, color=color_cycle(i))
             legends += [agent_name]
 
         '''
