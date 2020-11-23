@@ -17,6 +17,7 @@ from tensorflow.keras import losses
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 from tensorflow.keras import optimizers
 from tensorflow import convert_to_tensor
+from tensorflow.keras.utils import plot_model
 import numpy as np
 
 from supervised_learning_tasks.task_supervised_keras import TaskKeras
@@ -141,6 +142,9 @@ class TaskBabiMemoryNetwork(TaskKeras):
         optimizer = optimizer(lr=learning_rate)
         model.compile(optimizer=optimizer, loss='sparse_categorical_crossentropy',
                       metrics=['accuracy'])
+
+        if False:
+            plot_model(model,show_shapes=True,show_layer_names=True)
 
         return model
 
