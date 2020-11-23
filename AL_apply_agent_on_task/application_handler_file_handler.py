@@ -61,10 +61,8 @@ class ApplicationHandlerFileHandlerJSON:
             data_string = jsonpickle.encode(application_handlers, f)
             f.write(data_string)
 
-    def plot_all_content_with_confidence_intervals(self, metric='accuracy',
-                                                   with_title: bool = True,
-                                                   agent_names: List[str] = [],
-                                                   plot_really: bool = True,
+    def plot_all_content_with_confidence_intervals(self, metric='accuracy', with_title: bool = True,
+                                                   agent_names: List[str] = [], plot_really: bool = True,
                                                    filename_for_plot=None):
         # define plots and legends
         run_representations = []
@@ -84,8 +82,8 @@ class ApplicationHandlerFileHandlerJSON:
         fig = plt.figure(figsize=(6, 4), dpi=320)
         legends = []
 
-        def mean_confidence_std(data_matrix, confidence: float = 0.95) \
-                -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+        def mean_confidence_std(data_matrix, confidence: float = 0.95) -> Tuple[
+            np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
             '''
             @param data_matrix: shape: (noIterations, no_repetitions)
             @param confidence:
@@ -133,6 +131,8 @@ class ApplicationHandlerFileHandlerJSON:
         title = "\n".join(wrap(title, 60))
         plt.xlabel('number of Samples')
         plt.ylabel(metric)
+        if "fashion" in title and "MNIST" not in title:
+            title = title.replace("fashion", "fashion-MNIST")
         if with_title:
             plt.title(title, fontsize=10)
         plt.tight_layout()
