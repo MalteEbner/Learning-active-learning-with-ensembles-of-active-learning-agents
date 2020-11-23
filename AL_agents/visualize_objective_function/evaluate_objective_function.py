@@ -92,10 +92,10 @@ with ParallelRunHandler(task_param_list[0].get_experiment_filename(), n_jobs=n_j
             beta_dict,
             task_param_list, al_params, agent_param,
             mean_type=mean_type)
-        #print(f"{objective_to_maximize}  {beta_dict}")
 
         beta_dict['accuracy'] = objective_to_maximize
         df_ = pd.DataFrame([beta_dict])
+        global with_header
         df_.to_csv(filename, mode='a', header=with_header, index=False)
         with_header = False
 
@@ -106,18 +106,3 @@ with ParallelRunHandler(task_param_list[0].get_experiment_filename(), n_jobs=n_j
     example_beta = hp.pyll.stochastic.sample(search_space)
 
     best_beta = hp.fmin(objective_function, search_space, algo=algo, max_evals=max_evals, verbose=True)
-
-
-if False:
-    filename = f"df objective {task_names}.csv"
-    df_new: pd.DataFrame = pd.DataFrame(result_dict_list)
-    try:
-        df_old = pd.read_csv(filename)
-        df = pd.concat([df_old, df_new])
-    except:
-        df = df_new
-    df.to_csv(f"df objective {task_names}.csv",index=False)
-
-
-
-
