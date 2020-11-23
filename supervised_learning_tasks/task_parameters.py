@@ -25,7 +25,7 @@ class TaskParameters:
         if self.dataset is None:
             task = task_class(verbose_init=verbose_init)
         else:
-            task = task_class(dataset=self.dataset,verbose_init=verbose_init)
+            task = task_class(dataset=self.dataset, verbose_init=verbose_init)
         return task
 
     def get_experiment_filename(self):
@@ -43,8 +43,8 @@ class TaskParameters:
             name = f"{self.dataset}"
         else:
             name = f"{self.task_name} {self.dataset}"
-        name = name.replace('model_','')
-        name = name.replace('_',' ')
+        name = name.replace('model_', '')
+        name = name.replace('_', ' ')
         return name
 
     def __eq__(self, other):
