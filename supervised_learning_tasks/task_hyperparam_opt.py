@@ -1,6 +1,6 @@
 from supervised_learning_tasks.task_parameters import TaskParameters
-from supervised_learning_tasks.tasks_vision.task_Vision_variantParams import TaskVisionVariantParams
-from supervised_learning_tasks.tasks_QA_bAbI.task_bAbI_variantParams import TaskBabiVariantParams
+from supervised_learning_tasks.tasks_vision.task_Vision_
+from supervised_learning_tasks.tasks_QA_bAbI.tasks_QA_bAbI import TaskBabiVariantParams
 
 
 # define AL run
@@ -8,7 +8,7 @@ from supervised_learning_tasks.tasks_QA_bAbI.task_bAbI_variantParams import Task
 possible tasks: 
 model_bAbI_memoryNetwork, model_Vision, model_checkerboard
 '''
-taskName = ["model_Vision", "model_bAbI_memoryNetwork", "model_checkerboard"][2]
+taskName = ["model_Vision", "model_bAbI_memoryNetwork", "model_checkerboard"][1]
 if taskName == "model_Vision":
     task_Vision_variantParams = TaskVisionVariantParams(dataset="MNIST", repr_1d_type='tSNE')
     task_params = TaskParameters(task_name=taskName, variant_params=task_Vision_variantParams)
