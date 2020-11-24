@@ -23,9 +23,9 @@ batch_size_annotation = 8
 n_jobs = 1
 runs_per_objective_function = 64
 
-max_evals = 20
+max_evals = 100
 
-algo = [hp.atpe.suggest, hp.tpe.suggest, hp.rand.suggest][1]
+algo = [hp.atpe.suggest, hp.tpe.suggest, hp.rand.suggest][2]
 
 '''
 Parameters for monte carlo simulation
