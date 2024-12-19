@@ -1,0 +1,16 @@
+This is just some rnaodom text containing af few typooss
+Lets see if this can be fixed
+
+
+example pytho code:
+
+```python
+
+
+if __name__ == "__main__":
+    a = 0
+    b = 3
+
+    ratio = b / a
+
+    print(f"{ratio=}")
